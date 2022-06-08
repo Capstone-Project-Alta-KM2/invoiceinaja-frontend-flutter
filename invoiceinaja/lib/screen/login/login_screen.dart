@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:invoiceinaja/screen/homepage/homepage_screen.dart';
 import 'package:invoiceinaja/screen/register/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -44,22 +45,14 @@ class _LoginScreenState extends State<LoginScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
+                  width: 160,
+                  height: 160,
                   decoration: const BoxDecoration(
-                    shape: BoxShape.rectangle,
-                  ),
-                  child: const Icon(
-                    Icons.image,
-                    size: 75,
-                    color: Colors.grey,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5),
-                  child: const Text(
-                    'InvoiceinAja',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(
+                        'assets/images/login-image.png',
+                      ),
                     ),
                   ),
                 ),
@@ -223,7 +216,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            PageRouteBuilder(
+                              pageBuilder:
+                                  (context, animation, secondaryAnimation) {
+                                return const HomepageScreen();
+                              },
+                              transitionsBuilder: (context, animation,
+                                  secondaryAnimation, child) {
+                                final tween = Tween(begin: 0.0, end: 1.0);
+                                return ScaleTransition(
+                                  scale: animation.drive(tween),
+                                  child: child,
+                                );
+                              },
+                            ),
+                          );
+                        },
                         child: const Text(
                           'Login',
                         ),

@@ -51,22 +51,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
+                  width: 160,
+                  height: 160,
                   decoration: const BoxDecoration(
-                    shape: BoxShape.rectangle,
-                  ),
-                  child: const Icon(
-                    Icons.image,
-                    size: 75,
-                    color: Colors.grey,
-                  ),
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5),
-                  child: const Text(
-                    'InvoiceinAja',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage(
+                        'assets/images/register-image.png',
+                      ),
                     ),
                   ),
                 ),
@@ -173,7 +165,133 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 30),
+                      margin: const EdgeInsets.only(top: 20),
+                      child: const Text(
+                        'Email',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      child: TextFormField(
+                        keyboardType: TextInputType.emailAddress,
+                        cursorColor: Colors.black,
+                        decoration: InputDecoration(
+                          hintText: 'Masukan Email Anda',
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                              width: 5,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: const Text(
+                        'Nomor Handphone',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      child: TextFormField(
+                        keyboardType: TextInputType.number,
+                        cursorColor: Colors.black,
+                        decoration: InputDecoration(
+                          hintText: 'Masukan No. Handphone Anda',
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                              width: 5,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: const Text(
+                        'Password',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 10),
+                      child: TextFormField(
+                        cursorColor: Colors.black,
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          hintText: 'Masukan Password Anda',
+                          filled: true,
+                          fillColor: Colors.white,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                              width: 5,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(
+                              10,
+                            ),
+                            borderSide: const BorderSide(
+                              color: Colors.black,
+                              style: BorderStyle.solid,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(
+                        top: 30,
+                        bottom: 35,
+                      ),
                       width: double.infinity,
                       height: 45,
                       child: ElevatedButton(
@@ -187,7 +305,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
                         child: const Text(
                           'Daftar',
                         ),
