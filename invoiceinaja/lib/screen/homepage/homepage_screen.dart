@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:invoiceinaja/screen/clients/clients_screen.dart';
 import 'package:invoiceinaja/screen/dashboard/dashboard_screen.dart';
 import 'package:invoiceinaja/screen/invoices/invoices_screen.dart';
@@ -58,15 +57,15 @@ class _HomepageScreenState extends State<HomepageScreen> {
           },
           items: const [
             BottomNavigationBarItem(
-              icon: Icon(Icons.home),
+              icon: Icon(Icons.grid_view_rounded),
               label: "Dashboard",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person),
+              icon: Icon(Icons.newspaper),
               label: "Invoices",
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
+              icon: Icon(Icons.people),
               label: "Clients",
             ),
             BottomNavigationBarItem(
