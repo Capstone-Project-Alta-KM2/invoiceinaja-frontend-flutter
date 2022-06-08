@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:invoiceinaja/screen/Login/login_screen.dart';
 
 void main() {
   runApp(const InvoiceinAja());
@@ -11,11 +12,7 @@ class InvoiceinAja extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(
-          child: Text('Kerangka Awal Flutter'),
-        ),
-      ),
+      home: LoginScreen(),
     );
   }
 }
