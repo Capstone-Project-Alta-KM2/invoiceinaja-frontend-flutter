@@ -73,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text(
                         'Login',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -83,7 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: const Text(
                         'Selamat Datang Kembali !!',
                         style: TextStyle(
-                          fontSize: 20,
+                          fontSize: 21,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
