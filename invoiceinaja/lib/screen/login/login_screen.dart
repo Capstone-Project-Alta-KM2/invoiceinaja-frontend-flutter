@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:invoiceinaja/screen/forgot_password/forgot_password_screen.dart';
 import 'package:invoiceinaja/screen/homepage/homepage_screen.dart';
 import 'package:invoiceinaja/screen/register/register_screen.dart';
 
@@ -30,14 +31,6 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.white,
-          statusBarIconBrightness: Brightness.dark,
-        ),
-      ),
       body: SafeArea(
         child: ListView(
           children: [
@@ -101,6 +94,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Container(
                       margin: const EdgeInsets.only(top: 10),
                       child: TextFormField(
+                        keyboardType: TextInputType.emailAddress,
                         cursorColor: Colors.black,
                         decoration: InputDecoration(
                           hintText: 'Masukan Email Anda',
@@ -190,12 +184,22 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           const Spacer(),
-                          const Text(
-                            'Lupa Password ?',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF9B6DFF),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const ForgotPassword(),
+                                ),
+                              );
+                            },
+                            child: const Text(
+                              'Lupa Password ?',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xFF9B6DFF),
+                              ),
                             ),
                           ),
                         ],
@@ -238,7 +242,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           'Login',
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -289,7 +293,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

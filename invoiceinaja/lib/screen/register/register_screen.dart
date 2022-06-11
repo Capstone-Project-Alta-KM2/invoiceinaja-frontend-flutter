@@ -39,10 +39,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             size: 35,
           ),
         ),
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.white,
-          statusBarIconBrightness: Brightness.dark,
-        ),
       ),
       body: SafeArea(
         child: ListView(
