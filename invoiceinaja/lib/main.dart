@@ -6,7 +6,7 @@ import 'package:invoiceinaja/screen/onboarding/onboarding_screen.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
+    statusBarColor: Colors.white,
     statusBarIconBrightness: Brightness.dark,
   ));
   runApp(const InvoiceinAja());
