@@ -10,6 +10,24 @@ class InvoicesScreen extends StatefulWidget {
 
 class _InvoicesScreenState extends State<InvoicesScreen> {
   bool all = true, paid = false, unpaid = false, draft = false, overdue = false;
+  final _controller = PageController();
+  int _currentPage = 0;
+
+  List<String> dataTitle = [
+    'All',
+    'Paid',
+    'Unpaid',
+    'Draft',
+    'Overdue',
+  ];
+
+  List<String> dataHalaman = [
+    'Halaman All',
+    'Halaman Paid',
+    'Halaman Unpaid',
+    'Halaman Draft',
+    'Halaman Overdue',
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -67,255 +85,74 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              all = true;
-                              paid = false;
-                              unpaid = false;
-                              draft = false;
-                              overdue = false;
-                            });
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn,
-                            alignment: Alignment.center,
-                            width: 80,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 3,
-                                  color: all
+                      children: dataTitle.map(
+                        (data) {
+                          var index = dataTitle.indexOf(data);
+                          return GestureDetector(
+                            onTap: () {
+                              _controller.animateToPage(
+                                index,
+                                duration: const Duration(milliseconds: 400),
+                                curve: Curves.easeIn,
+                              );
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 400),
+                              curve: Curves.easeIn,
+                              alignment: Alignment.center,
+                              width: 80,
+                              height: 30,
+                              decoration: BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    width: 3,
+                                    color: _currentPage == index
+                                        ? Colors.purpleAccent
+                                        : Colors.transparent,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                data,
+                                style: TextStyle(
+                                  color: _currentPage == index
                                       ? Colors.purpleAccent
-                                      : Colors.transparent,
+                                      : Colors.grey,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                            child: Text(
-                              'All',
-                              style: TextStyle(
-                                color: all ? Colors.purpleAccent : Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              all = false;
-                              paid = true;
-                              unpaid = false;
-                              draft = false;
-                              overdue = false;
-                            });
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn,
-                            alignment: Alignment.center,
-                            width: 80,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 3,
-                                  color: paid
-                                      ? Colors.purpleAccent
-                                      : Colors.transparent,
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              'Paid',
-                              style: TextStyle(
-                                color: paid ? Colors.purpleAccent : Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              all = false;
-                              paid = false;
-                              unpaid = true;
-                              draft = false;
-                              overdue = false;
-                            });
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn,
-                            alignment: Alignment.center,
-                            width: 80,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 3,
-                                  color: unpaid
-                                      ? Colors.purpleAccent
-                                      : Colors.transparent,
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              'Unpaid',
-                              style: TextStyle(
-                                color:
-                                    unpaid ? Colors.purpleAccent : Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              all = false;
-                              paid = false;
-                              unpaid = false;
-                              draft = true;
-                              overdue = false;
-                            });
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn,
-                            alignment: Alignment.center,
-                            width: 80,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 3,
-                                  color: draft
-                                      ? Colors.purpleAccent
-                                      : Colors.transparent,
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              'Draft',
-                              style: TextStyle(
-                                color:
-                                    draft ? Colors.purpleAccent : Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              all = false;
-                              paid = false;
-                              unpaid = false;
-                              draft = false;
-                              overdue = true;
-                            });
-                          },
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 400),
-                            curve: Curves.fastOutSlowIn,
-                            alignment: Alignment.center,
-                            width: 80,
-                            height: 30,
-                            decoration: BoxDecoration(
-                              border: Border(
-                                bottom: BorderSide(
-                                  width: 3,
-                                  color: overdue
-                                      ? Colors.purpleAccent
-                                      : Colors.transparent,
-                                ),
-                              ),
-                            ),
-                            child: Text(
-                              'Overdue',
-                              style: TextStyle(
-                                color:
-                                    overdue ? Colors.purpleAccent : Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                          );
+                        },
+                      ).toList(),
                     ),
                   ),
                 ],
               ),
             ),
             Expanded(
-              child: PageView(
-                children: [
-                  Container(
-                    color: Colors.red,
-                    child: const Center(
+              child: PageView.builder(
+                controller: _controller,
+                itemCount: dataHalaman.length,
+                onPageChanged: (int index) {
+                  setState(() {
+                    _currentPage = index;
+                  });
+                },
+                itemBuilder: (context, index) {
+                  return Container(
+                    color: Colors.white,
+                    child: Center(
                       child: Text(
-                        'Halaman All',
-                        style: TextStyle(
-                          color: Colors.white,
+                        dataHalaman[index],
+                        style: const TextStyle(
+                          color: Colors.black,
                           fontSize: 18,
                         ),
                       ),
                     ),
-                  ),
-                  Container(
-                    color: Colors.blue,
-                    child: const Center(
-                      child: Text(
-                        'Halaman Paid',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    color: Colors.green,
-                    child: const Center(
-                      child: Text(
-                        'Halaman Unpaid',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    color: Colors.brown,
-                    child: const Center(
-                      child: Text(
-                        'Halaman Draft',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                  Container(
-                    color: Colors.purple,
-                    child: const Center(
-                      child: Text(
-                        'Halaman Overdue',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ],
