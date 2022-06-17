@@ -60,13 +60,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 margin: const EdgeInsets.only(top: 15),
                 padding: const EdgeInsets.only(left: 15, right: 15),
                 alignment: Alignment.centerRight,
-                child: const Text(
-                  'Skipp',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF9B6DFF),
+                child: GestureDetector(
+                  onTap: () {
+                    _controller.nextPage(
+                      duration: const Duration(milliseconds: 400),
+                      curve: Curves.easeIn,
+                    );
+                  },
+                  child: const Text(
+                    'Skipp',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF9B6DFF),
+                    ),
                   ),
                 ),
               ),
@@ -179,6 +187,11 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     SmoothPageIndicator(
                       controller: _controller,
                       count: 3,
+                      onDotClicked: (index) => _controller.animateToPage(
+                        index,
+                        duration: const Duration(milliseconds: 400),
+                        curve: Curves.easeIn,
+                      ),
                       effect: const ExpandingDotsEffect(
                         activeDotColor: Color(0xFF9B6DFF),
                         dotColor: Colors.grey,

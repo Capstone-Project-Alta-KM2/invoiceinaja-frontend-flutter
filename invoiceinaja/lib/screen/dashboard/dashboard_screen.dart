@@ -2,9 +2,8 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:invoiceinaja/model/chart_model.dart';
-import 'package:invoiceinaja/model/invoices_activities_model.dart';
+import '../../model/invoices_model.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -30,9 +29,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ),
   );
 
-  final List<InvoicesActiviesModel> dataInvoices = List.generate(
+  final List<InvoicesModel> dataInvoices = List.generate(
     6,
-    (index) => InvoicesActiviesModel(
+    (index) => InvoicesModel(
       namaClient: "Ilham Ganteng",
       tanggalInvoices: "July 03, 2022",
       totalInvoices: "Rp 2.500.000",
@@ -89,6 +88,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           padding: const EdgeInsets.all(8.0),
           child: ListView(
             children: [
+              const SizedBox(
+                height: 15,
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [

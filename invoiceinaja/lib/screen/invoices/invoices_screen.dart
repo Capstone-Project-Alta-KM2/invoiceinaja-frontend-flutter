@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:invoiceinaja/model/invoices_model.dart';
 
 class InvoicesScreen extends StatefulWidget {
   const InvoicesScreen({Key? key}) : super(key: key);
@@ -29,29 +30,87 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
     'Halaman Overdue',
   ];
 
+  List<List<InvoicesModel>> dataInvoices = [
+    [
+      InvoicesModel(
+        namaClient: 'Ferdi',
+        tanggalInvoices: 'June 26, 2022',
+        totalInvoices: '2.000.000',
+        statusPembayaran: 'Paid',
+      ),
+      InvoicesModel(
+        namaClient: 'Ahmad',
+        tanggalInvoices: 'July 11, 2022',
+        totalInvoices: '1.500.000',
+        statusPembayaran: 'Paid',
+      ),
+      InvoicesModel(
+        namaClient: 'Mauladi',
+        tanggalInvoices: 'August 01, 2022',
+        totalInvoices: '3.000.000',
+        statusPembayaran: 'Paid',
+      ),
+      InvoicesModel(
+        namaClient: 'Robert',
+        tanggalInvoices: 'July 10, 2022',
+        totalInvoices: '1.000.000',
+        statusPembayaran: 'Unpaid',
+      ),
+      InvoicesModel(
+        namaClient: 'Tony',
+        tanggalInvoices: 'June 29, 2022',
+        totalInvoices: '2.500.000',
+        statusPembayaran: 'Unpaid',
+      ),
+    ],
+    [
+      InvoicesModel(
+        namaClient: 'Ferdi',
+        tanggalInvoices: 'June 26, 2022',
+        totalInvoices: '2.000.000',
+        statusPembayaran: 'Paid',
+      ),
+      InvoicesModel(
+        namaClient: 'Ahmad',
+        tanggalInvoices: 'July 11, 2022',
+        totalInvoices: '1.500.000',
+        statusPembayaran: 'Paid',
+      ),
+      InvoicesModel(
+        namaClient: 'Mauladi',
+        tanggalInvoices: 'August 01, 2022',
+        totalInvoices: '3.000.000',
+        statusPembayaran: 'Paid',
+      ),
+    ],
+    [
+      InvoicesModel(
+        namaClient: 'Robert',
+        tanggalInvoices: 'July 10, 2022',
+        totalInvoices: '1.000.000',
+        statusPembayaran: 'Unpaid',
+      ),
+      InvoicesModel(
+        namaClient: 'Tony',
+        tanggalInvoices: 'June 29, 2022',
+        totalInvoices: '2.500.000',
+        statusPembayaran: 'Unpaid',
+      ),
+    ],
+    [],
+    [],
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        systemOverlayStyle: const SystemUiOverlayStyle(
-          statusBarColor: Colors.white,
-          statusBarIconBrightness: Brightness.dark,
-        ),
-        title: const Text(
-          'Invoices',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
-      ),
       body: SafeArea(
         child: Column(
           children: [
+            const SizedBox(
+              height: 35,
+            ),
             Padding(
               padding: const EdgeInsets.all(15.0),
               child: Column(
@@ -133,24 +192,117 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
             Expanded(
               child: PageView.builder(
                 controller: _controller,
-                itemCount: dataHalaman.length,
+                itemCount: dataInvoices.length,
                 onPageChanged: (int index) {
                   setState(() {
                     _currentPage = index;
                   });
                 },
                 itemBuilder: (context, index) {
-                  return Container(
-                    color: Colors.white,
-                    child: Center(
-                      child: Text(
-                        dataHalaman[index],
-                        style: const TextStyle(
-                          color: Colors.black,
-                          fontSize: 18,
+                  var dataList = dataInvoices[index];
+                  return CustomScrollView(
+                    slivers: [
+                      if (dataList.isEmpty)
+                        SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 10, bottom: 10),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Container(
+                                  width: 280,
+                                  height: 280,
+                                  decoration: const BoxDecoration(
+                                    image: DecorationImage(
+                                      fit: BoxFit.contain,
+                                      image: AssetImage(
+                                        'assets/images/empty-invoices.png',
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(top: 10),
+                                  padding: const EdgeInsets.only(
+                                      left: 20, right: 20),
+                                  child: const Text(
+                                    'Buat Invoice Anda terlihat Profesional dan kirim melalui Email',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      SliverFillRemaining(
+                        hasScrollBody: false,
+                        child: Column(
+                          children: dataList.map((i) {
+                            return Card(
+                              child: ListTile(
+                                leading: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: const Color(0xFF9B6DFF)
+                                        .withOpacity(0.2),
+                                  ),
+                                  child: const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: Icon(
+                                      Icons.receipt_outlined,
+                                      color: Color(0xFF9B6DFF),
+                                      size: 25,
+                                    ),
+                                  ),
+                                ),
+                                title: Text(
+                                  i.namaClient,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  i.tanggalInvoices,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                trailing: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      i.totalInvoices,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      i.statusPembayaran,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          }).toList(),
                         ),
                       ),
-                    ),
+                    ],
                   );
                 },
               ),
