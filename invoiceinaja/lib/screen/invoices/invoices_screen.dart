@@ -112,7 +112,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
               height: 35,
             ),
             Padding(
-              padding: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(10.0),
               child: Column(
                 children: [
                   const Material(

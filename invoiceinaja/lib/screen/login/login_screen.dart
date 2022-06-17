@@ -34,6 +34,9 @@ class _LoginScreenState extends State<LoginScreen> {
       body: SafeArea(
         child: ListView(
           children: [
+            const SizedBox(
+              height: 25,
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
