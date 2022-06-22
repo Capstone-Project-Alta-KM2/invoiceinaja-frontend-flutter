@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     Container(
                       margin: const EdgeInsets.only(top: 10),
                       child: const Text(
-                        'Selamat Datang Kembali !!',
+                        'Selamat Datang Kembali !!👋',
                         style: TextStyle(
                           fontSize: 21,
                           fontWeight: FontWeight.bold,

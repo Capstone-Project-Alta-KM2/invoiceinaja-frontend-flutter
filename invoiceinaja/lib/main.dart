@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:invoiceinaja/screen/login/login_view_model.dart';
 import 'package:invoiceinaja/screen/onboarding/onboarding_screen.dart';
+import 'package:provider/provider.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -16,13 +18,20 @@ class InvoiceinAja extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'InvoiceinAja',
-      theme: ThemeData(
-        fontFamily: GoogleFonts.montserrat().fontFamily,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => LoginViewModel(),
+        ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'InvoiceinAja',
+        theme: ThemeData(
+          fontFamily: GoogleFonts.montserrat().fontFamily,
+        ),
+        home: const OnboardingScreen(),
       ),
-      home: const OnboardingScreen(),
     );
   }
 }
