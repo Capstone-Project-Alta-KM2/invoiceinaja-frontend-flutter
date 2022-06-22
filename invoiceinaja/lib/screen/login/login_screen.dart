@@ -12,6 +12,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isRemember = false;
+  bool isValid = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -55,6 +56,14 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Form(
               key: _formKey,
+              onChanged: () {
+                final valid = _formKey.currentState!.validate();
+                if (isValid != valid) {
+                  setState(() {
+                    isValid = valid;
+                  });
+                }
+              },
               child: Padding(
                 padding: const EdgeInsets.only(
                   left: 15,
@@ -98,6 +107,18 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextFormField(
                         keyboardType: TextInputType.emailAddress,
                         cursorColor: Colors.black,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (email) {
+                          if (email == null || email.isEmpty) {
+                            return 'Email cannot be empty';
+                          } else if (!RegExp(
+                                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                              .hasMatch(email)) {
+                            return 'Enter email correctly';
+                          } else {
+                            return null;
+                          }
+                        },
                         decoration: InputDecoration(
                           hintText: 'Masukan Email Anda',
                           filled: true,
@@ -139,6 +160,14 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextFormField(
                         obscureText: true,
                         cursorColor: Colors.black,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (password) {
+                          if (password == null || password.isEmpty) {
+                            return 'Password cannot be empty';
+                          } else {
+                            return null;
+                          }
+                        },
                         decoration: InputDecoration(
                           hintText: 'Masukan Password Anda',
                           filled: true,
@@ -214,6 +243,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(
                           primary: const Color(0xFF9B6DFF),
+                          onSurface: const Color(0xFF9B6DFF),
                           textStyle: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
@@ -222,24 +252,28 @@ class _LoginScreenState extends State<LoginScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                         ),
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            PageRouteBuilder(
-                              pageBuilder:
-                                  (context, animation, secondaryAnimation) {
-                                return const HomepageScreen();
-                              },
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                final tween = Tween(begin: 0.0, end: 1.0);
-                                return ScaleTransition(
-                                  scale: animation.drive(tween),
-                                  child: child,
+                        onPressed: isValid
+                            ? () {
+                                final form = _formKey.currentState!;
+                                if (form.validate()) {}
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    pageBuilder: (context, animation,
+                                        secondaryAnimation) {
+                                      return const HomepageScreen();
+                                    },
+                                    transitionsBuilder: (context, animation,
+                                        secondaryAnimation, child) {
+                                      final tween = Tween(begin: 0.0, end: 1.0);
+                                      return ScaleTransition(
+                                        scale: animation.drive(tween),
+                                        child: child,
+                                      );
+                                    },
+                                  ),
                                 );
-                              },
-                            ),
-                          );
-                        },
+                              }
+                            : null,
                         child: const Text(
                           'Login',
                         ),

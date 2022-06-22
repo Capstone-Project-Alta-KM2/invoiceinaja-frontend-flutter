@@ -93,6 +93,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       margin: const EdgeInsets.only(top: 10),
                       child: TextFormField(
                         cursorColor: Colors.black,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (name) {
+                          if (name == null || name.isEmpty) {
+                            return 'Name cannot be empty';
+                          } else {
+                            return null;
+                          }
+                        },
                         decoration: InputDecoration(
                           hintText: 'Masukan Nama Lengkap Anda',
                           filled: true,
@@ -133,6 +141,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       margin: const EdgeInsets.only(top: 10),
                       child: TextFormField(
                         cursorColor: Colors.black,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (company) {
+                          if (company == null || company.isEmpty) {
+                            return 'Company cannot be empty';
+                          } else {
+                            return null;
+                          }
+                        },
                         decoration: InputDecoration(
                           hintText: 'Masukan Nama Perusahaan Anda',
                           filled: true,
@@ -174,6 +190,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: TextFormField(
                         keyboardType: TextInputType.emailAddress,
                         cursorColor: Colors.black,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (email) {
+                          if (email == null || email.isEmpty) {
+                            return 'email cannot be empty';
+                          } else if (!RegExp(
+                                  r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                              .hasMatch(email)) {
+                            return 'Enter email correctly';
+                          } else {
+                            return null;
+                          }
+                        },
                         decoration: InputDecoration(
                           hintText: 'Masukan Email Anda',
                           filled: true,
@@ -215,6 +243,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: TextFormField(
                         keyboardType: TextInputType.number,
                         cursorColor: Colors.black,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (phone) {
+                          if (phone == null || phone.isEmpty) {
+                            return 'Phone cannot be empty';
+                          } else {
+                            return null;
+                          }
+                        },
                         decoration: InputDecoration(
                           hintText: 'Masukan No. Handphone Anda',
                           filled: true,
@@ -256,6 +292,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: TextFormField(
                         cursorColor: Colors.black,
                         obscureText: true,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (password) {
+                          if (password == null || password.isEmpty) {
+                            return 'Password cannot be empty';
+                          } else if (password.length < 8) {
+                            return 'Must be at least 8 characters long';
+                          } else if (!RegExp(r'[a-z]').hasMatch(password)) {
+                            return 'Include at least 1 lowercase letter';
+                          } else if (!RegExp(r'[A-Z]').hasMatch(password)) {
+                            return 'Include at least 1 uppercase letter';
+                          } else {
+                            return null;
+                          }
+                        },
                         decoration: InputDecoration(
                           hintText: 'Masukan Password Anda',
                           filled: true,

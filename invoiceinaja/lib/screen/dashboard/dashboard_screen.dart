@@ -15,9 +15,8 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   String value = '';
   var dropItems = [
-    'Last 6 Month',
-    'Last 3 Month',
-    'Last Month',
+    'Monthly',
+    'Weekly',
   ];
 
   final List<ChartModel> dataChart = List.generate(
