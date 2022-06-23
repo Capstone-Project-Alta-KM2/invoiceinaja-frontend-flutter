@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:invoiceinaja/screen/add_client/add_client_screen.dart';
 
 class ClientsScreen extends StatelessWidget {
   const ClientsScreen({Key? key}) : super(key: key);
@@ -91,6 +92,18 @@ class ClientsScreen extends StatelessWidget {
               ),
             ),
           ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const AddClients()));
+        },
+        backgroundColor: const Color(0xFF9B6DFF),
+        child: const Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 30,
         ),
       ),
     );
