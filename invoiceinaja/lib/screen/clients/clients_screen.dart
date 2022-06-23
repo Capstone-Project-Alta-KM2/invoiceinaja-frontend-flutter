@@ -39,6 +39,57 @@ class ClientsScreen extends StatelessWidget {
                 ),
               ),
             ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Card(
+                child: ListTile(
+                  leading: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Icon(Icons.people, color: Color(0xFF9B6DFF)),
+                  ),
+                  title: Text(
+                    'Putra',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text('0812-3456-7890'),
+                  trailing: Text('Client'),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Card(
+                child: ListTile(
+                  leading: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Icon(Icons.people, color: Color(0xFF9B6DFF)),
+                  ),
+                  title: Text(
+                    'Nakula',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text('0812-3456-7890'),
+                  trailing: Text('Client'),
+                ),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(vertical: 8),
+              child: Card(
+                child: ListTile(
+                  leading: Padding(
+                    padding: EdgeInsets.all(8),
+                    child: Icon(Icons.people, color: Color(0xFF9B6DFF)),
+                  ),
+                  title: Text(
+                    'Sadewa',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Text('0812-3456-7890'),
+                  trailing: Text('Client'),
+                ),
+              ),
+            ),
           ],
         ),
       ),
