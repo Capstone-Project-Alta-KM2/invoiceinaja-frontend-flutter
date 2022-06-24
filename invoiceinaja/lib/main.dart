@@ -13,7 +13,7 @@ class InvoiceinAja extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
-          child: Text('Kerangka Awal Flutter'),
+          child: Text('Kerangka Awal Flutters'),
         ),
       ),
     );
