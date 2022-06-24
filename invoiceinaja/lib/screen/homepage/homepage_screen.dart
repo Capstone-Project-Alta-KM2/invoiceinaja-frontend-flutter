@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:invoiceinaja/screen/clients/clients_screen.dart';
-import 'package:invoiceinaja/screen/dashboard/dashboard_screen.dart';
-import 'package:invoiceinaja/screen/invoices/invoices_screen.dart';
-import 'package:invoiceinaja/screen/settings/settings_screen.dart';
+
+import '../clients/clients_screen.dart';
+import '../dashboard/dashboard_screen.dart';
+import '../invoices/invoices_screen.dart';
+import '../settings/settings_screen.dart';
 
 class HomepageScreen extends StatefulWidget {
   const HomepageScreen({Key? key}) : super(key: key);

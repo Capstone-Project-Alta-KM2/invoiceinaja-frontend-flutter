@@ -8,6 +8,9 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
+  bool isPasswordError = false;
+  bool _obscurepasswordRegister = true;
+
   final _formKey = GlobalKey<FormState>();
 
   final _emailController = TextEditingController();
@@ -23,6 +26,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -46,11 +50,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 160,
-                  height: 160,
+                  width: size.width * 0.6,
+                  height: 200,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       image: AssetImage(
                         'assets/images/register-image.png',
                       ),
@@ -291,8 +295,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       margin: const EdgeInsets.only(top: 10),
                       child: TextFormField(
                         cursorColor: Colors.black,
-                        obscureText: true,
+                        obscureText: _obscurepasswordRegister,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
+                        onChanged: (password) {
+                          if (password.isEmpty) {
+                            setState(() {
+                              isPasswordError = true;
+                            });
+                          } else if (password.length < 8) {
+                            setState(() {
+                              isPasswordError = true;
+                            });
+                          } else if (!RegExp(r'[a-z]').hasMatch(password)) {
+                            setState(() {
+                              isPasswordError = true;
+                            });
+                          } else if (!RegExp(r'[A-Z]').hasMatch(password)) {
+                            setState(() {
+                              isPasswordError = true;
+                            });
+                          } else {
+                            setState(() {
+                              isPasswordError = false;
+                            });
+                          }
+                        },
                         validator: (password) {
                           if (password == null || password.isEmpty) {
                             return 'Password cannot be empty';
@@ -310,6 +337,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           hintText: 'Masukan Password Anda',
                           filled: true,
                           fillColor: Colors.white,
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _obscurepasswordRegister =
+                                    !_obscurepasswordRegister;
+                              });
+                            },
+                            child: Icon(
+                              _obscurepasswordRegister
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color:
+                                  isPasswordError ? Colors.red : Colors.black,
+                            ),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
                               10,

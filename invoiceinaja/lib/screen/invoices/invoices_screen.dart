@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:invoiceinaja/model/invoices_model.dart';
+
+import '../../model/invoices_model.dart';
 
 class InvoicesScreen extends StatefulWidget {
   const InvoicesScreen({Key? key}) : super(key: key);
@@ -243,58 +244,157 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                         hasScrollBody: false,
                         child: Column(
                           children: dataList.map((i) {
-                            return Card(
-                              child: ListTile(
-                                leading: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: const Color(0xFF9B6DFF)
-                                        .withOpacity(0.2),
-                                  ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Icon(
-                                      Icons.receipt_outlined,
-                                      color: Color(0xFF9B6DFF),
-                                      size: 25,
+                            return Container(
+                              margin: const EdgeInsets.all(10.0),
+                              child: Card(
+                                elevation: 8,
+                                shadowColor: const Color(0xFF9B6DFF),
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(
+                                      20.0,
                                     ),
                                   ),
                                 ),
-                                title: Text(
-                                  i.namaClient,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                    left: 8,
+                                    right: 8,
+                                    top: 15,
+                                    bottom: 15,
                                   ),
-                                ),
-                                subtitle: Text(
-                                  i.tanggalInvoices,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                trailing: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      i.totalInvoices,
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
+                                  child: ListTile(
+                                    leading: Container(
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: const Color(0xFF9B6DFF)
+                                            .withOpacity(0.2),
+                                      ),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(10.0),
+                                        child: Icon(
+                                          Icons.receipt_outlined,
+                                          color: Color(0xFF9B6DFF),
+                                          size: 25,
+                                        ),
                                       ),
                                     ),
-                                    Text(
-                                      i.statusPembayaran,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
+                                    title: Container(
+                                      margin: const EdgeInsets.only(bottom: 5),
+                                      child: Text(
+                                        i.namaClient,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
-                                  ],
+                                    subtitle: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          margin:
+                                              const EdgeInsets.only(bottom: 5),
+                                          child: Text(
+                                            i.tanggalInvoices,
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        ),
+                                        Text(
+                                          i.totalInvoices,
+                                          style: const TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    trailing: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        const Icon(
+                                          Icons.more_horiz,
+                                          color: Colors.black,
+                                          size: 25,
+                                        ),
+                                        if (i.statusPembayaran == 'Paid')
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFF87E460)
+                                                  .withOpacity(0.2),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 15,
+                                                right: 15,
+                                                top: 5,
+                                                bottom: 5,
+                                              ),
+                                              child: Text(
+                                                i.statusPembayaran,
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  color: Color(0xFF87E460),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        if (i.statusPembayaran == 'Unpaid')
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFFFCC00)
+                                                  .withOpacity(0.2),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 15,
+                                                right: 15,
+                                                top: 5,
+                                                bottom: 5,
+                                              ),
+                                              child: Text(
+                                                i.statusPembayaran,
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  color: Color(0xFFFFCC00),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        if (i.statusPembayaran == 'Overdue')
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFFF304C)
+                                                  .withOpacity(0.2),
+                                            ),
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                left: 15,
+                                                right: 15,
+                                                top: 5,
+                                                bottom: 5,
+                                              ),
+                                              child: Text(
+                                                i.statusPembayaran,
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  color: Color(0xFFFF304C),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ),
                             );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:invoiceinaja/model/api/login_api.dart';
+
+import '../../model/api/login_api.dart';
 
 enum LoginViewState {
   none,

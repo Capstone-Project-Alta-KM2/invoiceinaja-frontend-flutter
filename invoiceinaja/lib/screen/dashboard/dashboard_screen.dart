@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:invoiceinaja/model/chart_model.dart';
+import '../../model/chart_model.dart';
 import '../../model/invoices_model.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -40,6 +40,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -91,7 +92,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 height: 15,
               ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Card(
                     elevation: 8,
@@ -102,8 +103,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     color: Colors.white,
                     child: SizedBox(
-                      height: 100,
-                      width: 180,
+                      height: 110,
+                      width: size.width * 0.455,
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Column(
@@ -171,8 +172,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     color: Colors.white,
                     child: SizedBox(
-                      height: 100,
-                      width: 180,
+                      height: 110,
+                      width: size.width * 0.455,
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Column(

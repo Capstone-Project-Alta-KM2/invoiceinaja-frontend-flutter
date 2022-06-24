@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:invoiceinaja/screen/login/login_view_model.dart';
-import 'package:invoiceinaja/screen/onboarding/onboarding_screen.dart';
 import 'package:provider/provider.dart';
+
+import 'screen/login/login_view_model.dart';
+import 'screen/onboarding/onboarding_screen.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:invoiceinaja/screen/forgot_password_email/forgot_password_email_screen.dart';
+
+import '../forgot_password_email/forgot_password_email_screen.dart';
 
 class ForgotPassword extends StatefulWidget {
   const ForgotPassword({Key? key}) : super(key: key);

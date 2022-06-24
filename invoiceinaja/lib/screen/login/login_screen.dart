@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:invoiceinaja/screen/forgot_password/forgot_password_screen.dart';
-import 'package:invoiceinaja/screen/homepage/homepage_screen.dart';
-import 'package:invoiceinaja/screen/register/register_screen.dart';
+
+import '../forgot_password/forgot_password_screen.dart';
+import '../homepage/homepage_screen.dart';
+import '../register/register_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -13,6 +14,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   bool isRemember = false;
   bool isValid = false;
+  bool isPasswordError = false;
+  bool _obscurepasswordLogin = true;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -29,23 +32,24 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
         child: ListView(
           children: [
             const SizedBox(
-              height: 25,
+              height: 40,
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Container(
-                  width: 160,
-                  height: 160,
+                  width: size.width * 0.6,
+                  height: 200,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      fit: BoxFit.cover,
+                      fit: BoxFit.contain,
                       image: AssetImage(
                         'assets/images/login-image.png',
                       ),
@@ -107,6 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: TextFormField(
                         keyboardType: TextInputType.emailAddress,
                         cursorColor: Colors.black,
+                        controller: _emailController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (email) {
                           if (email == null || email.isEmpty) {
@@ -158,9 +163,21 @@ class _LoginScreenState extends State<LoginScreen> {
                     Container(
                       margin: const EdgeInsets.only(top: 10),
                       child: TextFormField(
-                        obscureText: true,
+                        obscureText: _obscurepasswordLogin,
                         cursorColor: Colors.black,
+                        controller: _passwordController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
+                        onChanged: (password) {
+                          if (password.isEmpty) {
+                            setState(() {
+                              isPasswordError = true;
+                            });
+                          } else {
+                            setState(() {
+                              isPasswordError = false;
+                            });
+                          }
+                        },
                         validator: (password) {
                           if (password == null || password.isEmpty) {
                             return 'Password cannot be empty';
@@ -172,6 +189,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           hintText: 'Masukan Password Anda',
                           filled: true,
                           fillColor: Colors.white,
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _obscurepasswordLogin = !_obscurepasswordLogin;
+                              });
+                            },
+                            child: Icon(
+                              _obscurepasswordLogin
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              color:
+                                  isPasswordError ? Colors.red : Colors.black,
+                            ),
+                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(
                               10,
