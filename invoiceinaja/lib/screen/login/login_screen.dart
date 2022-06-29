@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:invoiceinaja/screen/login/login_view_model.dart';
+import 'package:provider/provider.dart';
 
 import '../forgot_password/forgot_password_screen.dart';
 import '../homepage/homepage_screen.dart';
@@ -33,6 +35,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final data = Provider.of<LoginViewModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -286,23 +289,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: isValid
                             ? () {
                                 final form = _formKey.currentState!;
-                                if (form.validate()) {}
-                                Navigator.of(context).push(
-                                  PageRouteBuilder(
-                                    pageBuilder: (context, animation,
-                                        secondaryAnimation) {
-                                      return const HomepageScreen();
-                                    },
-                                    transitionsBuilder: (context, animation,
-                                        secondaryAnimation, child) {
-                                      final tween = Tween(begin: 0.0, end: 1.0);
-                                      return ScaleTransition(
-                                        scale: animation.drive(tween),
-                                        child: child,
-                                      );
-                                    },
-                                  ),
-                                );
+                                if (form.validate()) {
+                                  data.login(_emailController.text,
+                                      _passwordController.text);
+                                  // Navigator.of(context).push(
+                                  //   PageRouteBuilder(
+                                  //     pageBuilder: (context, animation,
+                                  //         secondaryAnimation) {
+                                  //       return const HomepageScreen();
+                                  //     },
+                                  //     transitionsBuilder: (context, animation,
+                                  //         secondaryAnimation, child) {
+                                  //       final tween =
+                                  //           Tween(begin: 0.0, end: 1.0);
+                                  //       return ScaleTransition(
+                                  //         scale: animation.drive(tween),
+                                  //         child: child,
+                                  //       );
+                                  //     },
+                                  //   ),
+                                  // );
+                                }
                               }
                             : null,
                         child: const Text(

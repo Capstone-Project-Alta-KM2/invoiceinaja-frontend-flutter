@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'screen/login/login_view_model.dart';
 import 'screen/onboarding/onboarding_screen.dart';
+import 'screen/register/register_view_model.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -23,6 +24,9 @@ class InvoiceinAja extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(
           create: (context) => LoginViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => RegisterViewModel(),
         ),
       ],
       child: MaterialApp(
