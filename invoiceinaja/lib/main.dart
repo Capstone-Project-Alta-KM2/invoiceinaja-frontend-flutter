@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
+
+import 'screen/login/login_view_model.dart';
+import 'screen/onboarding/onboarding_screen.dart';
 
 void main() {
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.white,
+    statusBarIconBrightness: Brightness.dark,
+  ));
   runApp(const InvoiceinAja());
 }
 
@@ -9,12 +19,19 @@ class InvoiceinAja extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: Center(
-          child: Text('Kerangka Awal Flutters'),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => LoginViewModel(),
         ),
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'InvoiceinAja',
+        theme: ThemeData(
+          fontFamily: GoogleFonts.montserrat().fontFamily,
+        ),
+        home: const OnboardingScreen(),
       ),
     );
   }
