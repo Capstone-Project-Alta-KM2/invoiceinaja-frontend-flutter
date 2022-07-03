@@ -21,7 +21,7 @@ class LoginViewModel with ChangeNotifier {
     changeState(LoginViewState.loading);
 
     try {
-      await ApiClient().login(email, password);
+      await ApiClient().login(email, password).then((value) => print(value));
       changeState(LoginViewState.none);
     } catch (e) {
       changeState(LoginViewState.error);

@@ -412,6 +412,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             namaLengkap: _namaController.text,
                             namaBisnis: _namaPerusahaanController.text,
                             email: _emailController.text,
+                            noTlp: _noTeleponController.text,
                             kataSandi: _passwordController.text,
                           );
                           data.register(dataRegister);

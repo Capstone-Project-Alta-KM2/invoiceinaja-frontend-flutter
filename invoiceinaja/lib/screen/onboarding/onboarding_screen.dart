@@ -91,6 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   return Center(
                     child: ListView(
                       shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
                       children: [
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,
