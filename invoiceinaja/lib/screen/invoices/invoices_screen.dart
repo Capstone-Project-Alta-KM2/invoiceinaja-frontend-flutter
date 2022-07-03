@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:invoiceinaja/screen/create_invoice/create_invoice_screen.dart';
 
 import '../../model/invoices_model.dart';
 
@@ -410,7 +411,10 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const CreateInvoice()));
+        },
         backgroundColor: const Color(0xFF9B6DFF),
         child: const Icon(
           Icons.add,

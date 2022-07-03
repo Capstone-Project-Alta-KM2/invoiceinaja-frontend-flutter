@@ -43,7 +43,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: const EdgeInsets.only(top: 10),
                       child: const Text(
-                        'Nama',
+                        'Client Name',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -51,7 +51,7 @@ class _AddClientsState extends State<AddClients> {
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
                         decoration: InputDecoration(
-                          hintText: 'Nama',
+                          hintText: 'Name',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5)),
                         ),
@@ -77,7 +77,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       child: Text(
-                        'Telp',
+                        'Phone Number',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -85,7 +85,7 @@ class _AddClientsState extends State<AddClients> {
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
                         decoration: InputDecoration(
-                          hintText: 'No Telp',
+                          hintText: 'Phone Number',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5)),
                         ),
@@ -94,7 +94,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       child: Text(
-                        'Alamat',
+                        'Street',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -102,7 +102,7 @@ class _AddClientsState extends State<AddClients> {
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
                         decoration: InputDecoration(
-                          hintText: 'Alamat',
+                          hintText: 'Street',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5)),
                         ),
@@ -111,7 +111,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       child: Text(
-                        'Provinsi',
+                        'City',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -119,7 +119,7 @@ class _AddClientsState extends State<AddClients> {
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
                         decoration: InputDecoration(
-                          hintText: 'Provinsi',
+                          hintText: 'City',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5)),
                         ),
@@ -128,7 +128,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       child: Text(
-                        'Kota/Kabupaten',
+                        'Company',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -136,7 +136,7 @@ class _AddClientsState extends State<AddClients> {
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
                         decoration: InputDecoration(
-                          hintText: 'Kota/Kabupaten',
+                          hintText: 'Company',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5)),
                         ),
@@ -145,7 +145,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: EdgeInsets.only(top: 20),
                       child: Text(
-                        'Kode Pos',
+                        'Zip Code',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -153,24 +153,7 @@ class _AddClientsState extends State<AddClients> {
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
                         decoration: InputDecoration(
-                          hintText: 'Kode Pos',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.only(top: 20),
-                      child: Text(
-                        'Negara',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          hintText: 'Negara',
+                          hintText: 'Zip Code',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5)),
                         ),
