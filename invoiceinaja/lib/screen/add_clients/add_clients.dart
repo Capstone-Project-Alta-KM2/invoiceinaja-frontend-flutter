@@ -15,7 +15,7 @@ class _AddClientsState extends State<AddClients> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text('Buat Client'),
+        title: Text('Add Client'),
         centerTitle: true,
         // iconTheme: IconThemeData(color: Colors.black),
         leading: IconButton(

@@ -50,7 +50,7 @@ class AddProduct extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(top: 10),
+                    margin: const EdgeInsets.only(top: 20),
                     child: const Text(
                       'Deskription',
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -68,7 +68,7 @@ class AddProduct extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(top: 10),
+                    margin: const EdgeInsets.only(top: 20),
                     child: const Text(
                       'Quantity',
                       style: TextStyle(fontWeight: FontWeight.bold),
@@ -85,7 +85,7 @@ class AddProduct extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    margin: const EdgeInsets.only(top: 10),
+                    margin: const EdgeInsets.only(top: 20),
                     child: const Text(
                       'Price',
                       style: TextStyle(fontWeight: FontWeight.bold),

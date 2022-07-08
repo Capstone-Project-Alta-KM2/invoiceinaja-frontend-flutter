@@ -91,7 +91,7 @@ class ClientsScreen extends StatelessWidget {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
               child: Card(
                 elevation: 5,
                 shape: const RoundedRectangleBorder(
