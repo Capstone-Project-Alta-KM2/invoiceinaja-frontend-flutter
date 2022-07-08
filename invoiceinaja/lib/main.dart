@@ -65,8 +65,7 @@ class _InvoiceinAjaState extends State<InvoiceinAja> {
         theme: ThemeData(
           fontFamily: GoogleFonts.montserrat().fontFamily,
         ),
-        // home: token != null ? const HomepageScreen() : const OnboardingScreen(),
-        home: const HomepageScreen(),
+        home: token != null ? const HomepageScreen() : const OnboardingScreen(),
       ),
     );
   }

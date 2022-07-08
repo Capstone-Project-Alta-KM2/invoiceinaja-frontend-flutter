@@ -41,10 +41,11 @@ class ClientsViewModel with ChangeNotifier {
     changeState(ClientViewState.loading);
     try {
       await ApiClient().addClient(client);
-      notifyListeners();
+
       changeState(ClientViewState.none);
     } catch (e) {
       changeState(ClientViewState.error);
+      print(e);
     }
   }
 

@@ -31,16 +31,6 @@ class InvoicesViewModel with ChangeNotifier {
 
   List<String> get listTitle => List.unmodifiable(_dataTitle);
 
-  final List<String> _dataHalaman = [
-    'Halaman All',
-    'Halaman Paid',
-    'Halaman Unpaid',
-    'Halaman Draft',
-    'Halaman Overdue',
-  ];
-
-  List<String> get listHalaman => List.unmodifiable(_dataHalaman);
-
   changeState(InvoiceViewState s) {
     _state = s;
     notifyListeners();
@@ -79,10 +69,10 @@ class InvoicesViewModel with ChangeNotifier {
       _listInvoices = dataApi;
       _listAllInvoices = [
         _listInvoices,
-        _listInvoices.where((element) => element.status == 'PAID'),
-        _listInvoices.where((element) => element.status == 'UNPAID'),
-        _listInvoices.where((element) => element.status == 'DRAFT'),
-        _listInvoices.where((element) => element.status == 'OVERDUE'),
+        _listInvoices.where((element) => element.status == 'PAID').toList(),
+        _listInvoices.where((element) => element.status == 'UNPAID').toList(),
+        _listInvoices.where((element) => element.status == 'DRAFT').toList(),
+        _listInvoices.where((element) => element.status == 'OVERDUE').toList(),
       ];
       notifyListeners();
       changeState(InvoiceViewState.none);
