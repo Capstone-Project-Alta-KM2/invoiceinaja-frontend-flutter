@@ -2,23 +2,32 @@ class UserModel {
   String? namaLengkap;
   String? email;
   String? namaBisnis;
+  String? noTlp;
   String? kataSandi;
 
-  UserModel({this.namaLengkap, this.email, this.namaBisnis, this.kataSandi});
+  UserModel({
+    this.namaLengkap,
+    this.email,
+    this.noTlp,
+    this.namaBisnis,
+    this.kataSandi,
+  });
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    namaLengkap = json['nama_lengkap'];
+    namaLengkap = json['fullname'];
     email = json['email'];
-    namaBisnis = json['nama_bisnis'];
-    kataSandi = json['kata_sandi'];
+    noTlp = json['phone_number'];
+    namaBisnis = json['company'];
+    kataSandi = json['password'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['nama_lengkap'] = namaLengkap;
+    data['fullname'] = namaLengkap;
     data['email'] = email;
-    data['nama_bisnis'] = namaBisnis;
-    data['kata_sandi'] = kataSandi;
+    data['phone_number'] = noTlp;
+    data['company'] = namaBisnis;
+    data['password'] = kataSandi;
     return data;
   }
 }
