@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:invoiceinaja/model/user_model.dart';
 import 'package:provider/provider.dart';
 
+import '../login/login_screen.dart';
 import 'register_view_model.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -55,6 +56,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       ),
       body: SafeArea(
         child: ListView(
+          physics: const BouncingScrollPhysics(),
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -389,39 +391,130 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(
-                        top: 30,
-                        bottom: 35,
-                      ),
-                      width: double.infinity,
-                      height: 45,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: const Color(0xFF9B6DFF),
-                          textStyle: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
+                    if (data.state == RegisterViewState.loading)
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 30,
+                          bottom: 35,
                         ),
-                        onPressed: () {
-                          final dataRegister = UserModel(
-                            namaLengkap: _namaController.text,
-                            namaBisnis: _namaPerusahaanController.text,
-                            email: _emailController.text,
-                            noTlp: _noTeleponController.text,
-                            kataSandi: _passwordController.text,
-                          );
-                          data.register(dataRegister);
-                        },
-                        child: const Text(
-                          'Daftar',
+                        alignment: Alignment.center,
+                        child: const CircularProgressIndicator(
+                          color: Colors.purple,
                         ),
                       ),
-                    )
+                    if (data.state != RegisterViewState.loading)
+                      Container(
+                        margin: const EdgeInsets.only(
+                          top: 30,
+                          bottom: 35,
+                        ),
+                        width: double.infinity,
+                        height: 45,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color(0xFF9B6DFF),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed: () {
+                            final form = _formKey.currentState!;
+                            if (form.validate()) {
+                              final dataRegister = UserModel(
+                                namaLengkap: _namaController.text,
+                                namaBisnis: _namaPerusahaanController.text,
+                                email: _emailController.text,
+                                noTlp: _noTeleponController.text,
+                                kataSandi: _passwordController.text,
+                              );
+                              data.register(dataRegister).then(
+                                (value) {
+                                  if (data.state == RegisterViewState.none) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        duration: const Duration(seconds: 1),
+                                        content: Container(
+                                          width: double.infinity,
+                                          height: 30,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                            "Register Succesfully",
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
+                                        ),
+                                        backgroundColor: Colors.purple,
+                                      ),
+                                    );
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const LoginScreen(),
+                                      ),
+                                      (Route<dynamic> route) => false,
+                                    );
+                                  }
+                                  if (data.state ==
+                                      RegisterViewState.serverTimeout) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Container(
+                                          width: double.infinity,
+                                          height: 30,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                              "We couldn't connect to server, please try again later"),
+                                        ),
+                                        backgroundColor:
+                                            Theme.of(context).errorColor,
+                                      ),
+                                    );
+                                  }
+                                  if (data.state == RegisterViewState.error) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Container(
+                                          width: double.infinity,
+                                          height: 30,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                              "Something went wrong, please check your connection or try again later"),
+                                        ),
+                                        backgroundColor:
+                                            Theme.of(context).errorColor,
+                                      ),
+                                    );
+                                  }
+                                  if (data.state == RegisterViewState.failed) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Container(
+                                          width: double.infinity,
+                                          height: 30,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                              "Register failed, please check the data again"),
+                                        ),
+                                        backgroundColor:
+                                            Theme.of(context).errorColor,
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                            }
+                          },
+                          child: const Text(
+                            'Daftar',
+                          ),
+                        ),
+                      )
                   ],
                 ),
               ),

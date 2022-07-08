@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:invoiceinaja/screen/create_invoice/create_invoice_screen.dart';
+import 'package:provider/provider.dart';
 
-import '../../model/invoices_model.dart';
+import '../create_invoice/create_invoice_screen.dart';
+import 'invoices_view_model.dart';
 
 class InvoicesScreen extends StatefulWidget {
   const InvoicesScreen({Key? key}) : super(key: key);
@@ -11,99 +12,21 @@ class InvoicesScreen extends StatefulWidget {
 }
 
 class _InvoicesScreenState extends State<InvoicesScreen> {
-  bool all = true, paid = false, unpaid = false, draft = false, overdue = false;
   final _controller = PageController();
   int _currentPage = 0;
 
-  List<String> dataTitle = [
-    'All',
-    'Paid',
-    'Unpaid',
-    'Draft',
-    'Overdue',
-  ];
-
-  List<String> dataHalaman = [
-    'Halaman All',
-    'Halaman Paid',
-    'Halaman Unpaid',
-    'Halaman Draft',
-    'Halaman Overdue',
-  ];
-
-  List<List<InvoicesModel>> dataInvoices = [
-    [
-      InvoicesModel(
-        namaClient: 'Ferdi',
-        tanggalInvoices: 'June 26, 2022',
-        totalInvoices: '2.000.000',
-        statusPembayaran: 'Paid',
-      ),
-      InvoicesModel(
-        namaClient: 'Ahmad',
-        tanggalInvoices: 'July 11, 2022',
-        totalInvoices: '1.500.000',
-        statusPembayaran: 'Paid',
-      ),
-      InvoicesModel(
-        namaClient: 'Mauladi',
-        tanggalInvoices: 'August 01, 2022',
-        totalInvoices: '3.000.000',
-        statusPembayaran: 'Paid',
-      ),
-      InvoicesModel(
-        namaClient: 'Robert',
-        tanggalInvoices: 'July 10, 2022',
-        totalInvoices: '1.000.000',
-        statusPembayaran: 'Unpaid',
-      ),
-      InvoicesModel(
-        namaClient: 'Tony',
-        tanggalInvoices: 'June 29, 2022',
-        totalInvoices: '2.500.000',
-        statusPembayaran: 'Unpaid',
-      ),
-    ],
-    [
-      InvoicesModel(
-        namaClient: 'Ferdi',
-        tanggalInvoices: 'June 26, 2022',
-        totalInvoices: '2.000.000',
-        statusPembayaran: 'Paid',
-      ),
-      InvoicesModel(
-        namaClient: 'Ahmad',
-        tanggalInvoices: 'July 11, 2022',
-        totalInvoices: '1.500.000',
-        statusPembayaran: 'Paid',
-      ),
-      InvoicesModel(
-        namaClient: 'Mauladi',
-        tanggalInvoices: 'August 01, 2022',
-        totalInvoices: '3.000.000',
-        statusPembayaran: 'Paid',
-      ),
-    ],
-    [
-      InvoicesModel(
-        namaClient: 'Robert',
-        tanggalInvoices: 'July 10, 2022',
-        totalInvoices: '1.000.000',
-        statusPembayaran: 'Unpaid',
-      ),
-      InvoicesModel(
-        namaClient: 'Tony',
-        tanggalInvoices: 'June 29, 2022',
-        totalInvoices: '2.500.000',
-        statusPembayaran: 'Unpaid',
-      ),
-    ],
-    [],
-    [],
-  ];
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      var viewModel = Provider.of<InvoicesViewModel>(context, listen: false);
+      await viewModel.getData();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
+    final manager = Provider.of<InvoicesViewModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -145,9 +68,9 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                   SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: Row(
-                      children: dataTitle.map(
+                      children: manager.listTitle.map(
                         (data) {
-                          var index = dataTitle.indexOf(data);
+                          var index = manager.listTitle.indexOf(data);
                           return GestureDetector(
                             onTap: () {
                               _controller.animateToPage(
@@ -193,14 +116,14 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
             Expanded(
               child: PageView.builder(
                 controller: _controller,
-                itemCount: dataInvoices.length,
+                itemCount: manager.listAllInvoice.length,
                 onPageChanged: (int index) {
                   setState(() {
                     _currentPage = index;
                   });
                 },
                 itemBuilder: (context, index) {
-                  var dataList = dataInvoices[index];
+                  var dataList = manager.listAllInvoice[index];
                   return CustomScrollView(
                     slivers: [
                       if (dataList.isEmpty)
@@ -283,7 +206,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                     title: Container(
                                       margin: const EdgeInsets.only(bottom: 5),
                                       child: Text(
-                                        i.namaClient,
+                                        i.client!,
                                         style: const TextStyle(
                                           fontSize: 15,
                                           color: Colors.black,
@@ -299,7 +222,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                           margin:
                                               const EdgeInsets.only(bottom: 5),
                                           child: Text(
-                                            i.tanggalInvoices,
+                                            i.postDue!,
                                             style: const TextStyle(
                                               fontSize: 13,
                                               color: Colors.black,
@@ -307,7 +230,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                           ),
                                         ),
                                         Text(
-                                          i.totalInvoices,
+                                          i.amount.toString(),
                                           style: const TextStyle(
                                             fontSize: 15,
                                             color: Colors.black,
@@ -327,7 +250,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                           color: Colors.black,
                                           size: 25,
                                         ),
-                                        if (i.statusPembayaran == 'Paid')
+                                        if (i.status == 'Paid')
                                           Container(
                                             decoration: BoxDecoration(
                                               color: const Color(0xFF87E460)
@@ -341,7 +264,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                 bottom: 5,
                                               ),
                                               child: Text(
-                                                i.statusPembayaran,
+                                                i.status!,
                                                 style: const TextStyle(
                                                   fontSize: 13,
                                                   color: Color(0xFF87E460),
@@ -349,7 +272,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                               ),
                                             ),
                                           ),
-                                        if (i.statusPembayaran == 'Unpaid')
+                                        if (i.status == 'Unpaid')
                                           Container(
                                             decoration: BoxDecoration(
                                               color: const Color(0xFFFFCC00)
@@ -363,7 +286,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                 bottom: 5,
                                               ),
                                               child: Text(
-                                                i.statusPembayaran,
+                                                i.status!,
                                                 style: const TextStyle(
                                                   fontSize: 13,
                                                   color: Color(0xFFFFCC00),
@@ -371,7 +294,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                               ),
                                             ),
                                           ),
-                                        if (i.statusPembayaran == 'Overdue')
+                                        if (i.status == 'Overdue')
                                           Container(
                                             decoration: BoxDecoration(
                                               color: const Color(0xFFFF304C)
@@ -385,7 +308,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                 bottom: 5,
                                               ),
                                               child: Text(
-                                                i.statusPembayaran,
+                                                i.status!,
                                                 style: const TextStyle(
                                                   fontSize: 13,
                                                   color: Color(0xFFFF304C),

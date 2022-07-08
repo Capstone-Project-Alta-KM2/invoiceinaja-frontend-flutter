@@ -5,10 +5,15 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'screen/clients/clinets_view_model.dart';
 import 'screen/homepage/homepage_screen.dart';
+
+import 'screen/invoices/invoices_view_model.dart';
 import 'screen/login/login_view_model.dart';
 import 'screen/onboarding/onboarding_screen.dart';
+
 import 'screen/register/register_view_model.dart';
+import 'screen/settings/settings_view_model.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
@@ -44,6 +49,15 @@ class _InvoiceinAjaState extends State<InvoiceinAja> {
         ChangeNotifierProvider(
           create: (context) => RegisterViewModel(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => SettingViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => InvoicesViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => ClientsViewModel(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -51,7 +65,8 @@ class _InvoiceinAjaState extends State<InvoiceinAja> {
         theme: ThemeData(
           fontFamily: GoogleFonts.montserrat().fontFamily,
         ),
-        home: token != null ? const HomepageScreen() : const OnboardingScreen(),
+        // home: token != null ? const HomepageScreen() : const OnboardingScreen(),
+        home: const HomepageScreen(),
       ),
     );
   }

@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:invoiceinaja/model/client_model.dart';
 import 'package:invoiceinaja/screen/clients/clients_screen.dart';
+import 'package:provider/provider.dart';
+
+import '../clients/clinets_view_model.dart';
+import '../homepage/homepage_screen.dart';
 
 class AddClients extends StatefulWidget {
   const AddClients({Key? key}) : super(key: key);
@@ -9,13 +14,36 @@ class AddClients extends StatefulWidget {
 }
 
 class _AddClientsState extends State<AddClients> {
+  final _formKey = GlobalKey<FormState>();
+
+  final _clientNameController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _cityController = TextEditingController();
+  final _phoneNumberController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _zipCodeController = TextEditingController();
+  final _companyController = TextEditingController();
+
+  @override
+  void dispose() {
+    _clientNameController.dispose();
+    _addressController.dispose();
+    _cityController.dispose();
+    _phoneNumberController.dispose();
+    _emailController.dispose();
+    _zipCodeController.dispose();
+    _companyController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
+    final data = Provider.of<ClientsViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text('Buat Client'),
+        title: const Text('Buat Client'),
         centerTitle: true,
         // iconTheme: IconThemeData(color: Colors.black),
         leading: IconButton(
@@ -28,7 +56,7 @@ class _AddClientsState extends State<AddClients> {
             size: 24,
           ),
         ),
-        titleTextStyle: TextStyle(color: Colors.black, fontSize: 16),
+        titleTextStyle: const TextStyle(color: Colors.black, fontSize: 16),
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -37,6 +65,7 @@ class _AddClientsState extends State<AddClients> {
           child: ListView(
             children: [
               Form(
+                key: _formKey,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -50,6 +79,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
+                        controller: _clientNameController,
                         decoration: InputDecoration(
                           hintText: 'Name',
                           border: OutlineInputBorder(
@@ -58,8 +88,8 @@ class _AddClientsState extends State<AddClients> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 20),
-                      child: Text(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: const Text(
                         'Email',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -67,6 +97,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
+                        controller: _emailController,
                         decoration: InputDecoration(
                           hintText: 'Email',
                           border: OutlineInputBorder(
@@ -75,8 +106,8 @@ class _AddClientsState extends State<AddClients> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 20),
-                      child: Text(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: const Text(
                         'Phone Number',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -84,6 +115,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
+                        controller: _phoneNumberController,
                         decoration: InputDecoration(
                           hintText: 'Phone Number',
                           border: OutlineInputBorder(
@@ -92,8 +124,8 @@ class _AddClientsState extends State<AddClients> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 20),
-                      child: Text(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: const Text(
                         'Street',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -101,6 +133,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
+                        controller: _addressController,
                         decoration: InputDecoration(
                           hintText: 'Street',
                           border: OutlineInputBorder(
@@ -109,8 +142,8 @@ class _AddClientsState extends State<AddClients> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 20),
-                      child: Text(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: const Text(
                         'City',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -118,6 +151,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
+                        controller: _cityController,
                         decoration: InputDecoration(
                           hintText: 'City',
                           border: OutlineInputBorder(
@@ -126,8 +160,8 @@ class _AddClientsState extends State<AddClients> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 20),
-                      child: Text(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: const Text(
                         'Company',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -135,6 +169,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
+                        controller: _companyController,
                         decoration: InputDecoration(
                           hintText: 'Company',
                           border: OutlineInputBorder(
@@ -143,8 +178,8 @@ class _AddClientsState extends State<AddClients> {
                       ),
                     ),
                     Container(
-                      margin: EdgeInsets.only(top: 20),
-                      child: Text(
+                      margin: const EdgeInsets.only(top: 20),
+                      child: const Text(
                         'Zip Code',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
@@ -152,6 +187,7 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: const EdgeInsets.only(top: 12),
                       child: TextFormField(
+                        controller: _zipCodeController,
                         decoration: InputDecoration(
                           hintText: 'Zip Code',
                           border: OutlineInputBorder(
@@ -159,32 +195,77 @@ class _AddClientsState extends State<AddClients> {
                         ),
                       ),
                     ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 30, bottom: 10),
-                      width: double.infinity,
-                      height: 45,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          primary: const Color(0xFF9B6DFF),
-                          textStyle: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const ClientsScreen()));
-                        },
-                        child: const Text(
-                          'Simpan Client',
+                    if (data.state == ClientViewState.loading)
+                      Container(
+                        margin: const EdgeInsets.only(top: 30),
+                        alignment: Alignment.center,
+                        child: const CircularProgressIndicator(
+                          color: Colors.purple,
                         ),
                       ),
-                    ),
+                    if (data.state != ClientViewState.loading)
+                      Container(
+                        margin: const EdgeInsets.only(top: 30, bottom: 10),
+                        width: double.infinity,
+                        height: 45,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: const Color(0xFF9B6DFF),
+                            textStyle: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                          ),
+                          onPressed: () {
+                            final form = _formKey.currentState!;
+                            if (form.validate()) {
+                              var dataClient = ClientModel(
+                                fullname: _clientNameController.text,
+                                email: _emailController.text,
+                                address: _addressController.text,
+                                city: _cityController.text,
+                                zipCode: _zipCodeController.text,
+                                company: _companyController.text,
+                              );
+                              data.addClient(dataClient).then(
+                                (value) {
+                                  if (value.state == ClientViewState.none) {
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const HomepageScreen(),
+                                      ),
+                                      (Route<dynamic> route) => false,
+                                    );
+                                  }
+                                  if (value.state == ClientViewState.error) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: Container(
+                                          width: double.infinity,
+                                          height: 50,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                              "Something went wrong, please check your connection or try again later"),
+                                        ),
+                                        backgroundColor:
+                                            Theme.of(context).errorColor,
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                            }
+                          },
+                          child: const Text(
+                            'Simpan Client',
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
