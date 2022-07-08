@@ -15,11 +15,12 @@ class ApiClient {
     BaseOptions options = BaseOptions(
         baseUrl: 'http://103.176.78.214:8080/api/v1',
         receiveDataWhenStatusError: true,
-        connectTimeout: 3 * 1000, // 60 seconds
-        receiveTimeout: 3 * 1000 // 60 seconds
+        connectTimeout: 60 * 1000, // 60 seconds
+        receiveTimeout: 60 * 1000 // 60 seconds
         );
 
     dio = Dio(options);
+    dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
   }
 
   Future<LoginModel> login(String email, String password) async {
