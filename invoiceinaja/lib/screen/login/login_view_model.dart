@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../model/api/login_api.dart';
+import '../../model/api/api_client.dart';
 
 enum LoginViewState {
   none,
@@ -21,10 +21,11 @@ class LoginViewModel with ChangeNotifier {
     changeState(LoginViewState.loading);
 
     try {
-      await LoginApi().login(email, password);
+      await ApiClient().login(email, password);
       changeState(LoginViewState.none);
     } catch (e) {
       changeState(LoginViewState.error);
+      print(e);
     }
   }
 }

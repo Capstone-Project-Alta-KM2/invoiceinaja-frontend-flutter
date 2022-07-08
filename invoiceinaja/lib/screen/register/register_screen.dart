@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:invoiceinaja/model/user_model.dart';
+import 'package:provider/provider.dart';
+
+import 'register_view_model.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({Key? key}) : super(key: key);
@@ -13,12 +17,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
+  final _namaController = TextEditingController();
+  final _namaPerusahaanController = TextEditingController();
+  final _noTeleponController = TextEditingController();
   final _emailController = TextEditingController();
-
   final _passwordController = TextEditingController();
 
   @override
   void dispose() {
+    _namaController.dispose();
+    _namaPerusahaanController.dispose();
+    _noTeleponController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     super.dispose();
@@ -27,6 +36,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final data = Provider.of<RegisterViewModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -97,6 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       margin: const EdgeInsets.only(top: 10),
                       child: TextFormField(
                         cursorColor: Colors.black,
+                        controller: _namaController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (name) {
                           if (name == null || name.isEmpty) {
@@ -145,6 +156,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       margin: const EdgeInsets.only(top: 10),
                       child: TextFormField(
                         cursorColor: Colors.black,
+                        controller: _namaPerusahaanController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (company) {
                           if (company == null || company.isEmpty) {
@@ -194,6 +206,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: TextFormField(
                         keyboardType: TextInputType.emailAddress,
                         cursorColor: Colors.black,
+                        controller: _emailController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (email) {
                           if (email == null || email.isEmpty) {
@@ -247,6 +260,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: TextFormField(
                         keyboardType: TextInputType.number,
                         cursorColor: Colors.black,
+                        controller: _noTeleponController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         validator: (phone) {
                           if (phone == null || phone.isEmpty) {
@@ -296,6 +310,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       child: TextFormField(
                         cursorColor: Colors.black,
                         obscureText: _obscurepasswordRegister,
+                        controller: _passwordController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         onChanged: (password) {
                           if (password.isEmpty) {
@@ -393,7 +408,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                         onPressed: () {
-                          Navigator.pop(context);
+                          final dataRegister = UserModel(
+                            namaLengkap: _namaController.text,
+                            namaBisnis: _namaPerusahaanController.text,
+                            email: _emailController.text,
+                            kataSandi: _passwordController.text,
+                          );
+                          data.register(dataRegister);
                         },
                         child: const Text(
                           'Daftar',

@@ -1,8 +1,9 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:invoiceinaja/model/user_model.dart';
 
-class LoginApi {
+class ApiClient {
   Future<Response> login(String email, String password) async {
     try {
       final response = await Dio().post(
@@ -12,7 +13,20 @@ class LoginApi {
           'kata_sandi': password,
         },
       );
+
       return response;
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<Response> register(UserModel user) async {
+    try {
+      final response = await Dio().post(
+        'http://103.176.78.214:8080/api/v1/users',
+        data: user.toJson(),
+      );
+      return response.data;
     } catch (e) {
       rethrow;
     }
