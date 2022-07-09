@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:invoiceinaja/screen/add_product/add_product_screen.dart';
-import 'package:invoiceinaja/screen/preview_invoice/preview_invoice_screen.dart';
+import 'package:invoiceinaja/screen/invoices/add_product_screen.dart';
+import 'package:invoiceinaja/screen/invoices/preview_invoice_screen.dart';
 
 class CreateInvoice extends StatefulWidget {
   const CreateInvoice({Key? key}) : super(key: key);
@@ -16,23 +16,23 @@ class _CreateInvoiceState extends State<CreateInvoice> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text('Invoice'),
+        title: const Text('Invoice'),
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new,
             color: Colors.black,
             size: 24,
           ),
         ),
-        titleTextStyle: TextStyle(color: Colors.black, fontSize: 16),
+        titleTextStyle: const TextStyle(color: Colors.black, fontSize: 16),
       ),
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: ListView(
           children: [
             Form(
@@ -135,15 +135,14 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                                 child: OutlinedButton(
                                   child: Row(
                                     children: [
-                                      Text(
+                                      const Text(
                                         'mm/dd/yyyy',
-                                        style:
-                                            const TextStyle(color: Colors.grey),
+                                        style: TextStyle(color: Colors.grey),
                                       ),
-                                      Padding(
-                                          padding: EdgeInsets.symmetric(
+                                      const Padding(
+                                          padding: const EdgeInsets.symmetric(
                                               horizontal: 5)),
-                                      Icon(Icons.date_range,
+                                      const Icon(Icons.date_range,
                                           color: Colors.grey),
                                     ],
                                   ),
@@ -170,15 +169,14 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                                 child: OutlinedButton(
                                   child: Row(
                                     children: [
-                                      Text(
+                                      const Text(
                                         'mm/dd/yyyy',
-                                        style:
-                                            const TextStyle(color: Colors.grey),
+                                        style: TextStyle(color: Colors.grey),
                                       ),
-                                      Padding(
+                                      const Padding(
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 5)),
-                                      Icon(Icons.date_range,
+                                      const Icon(Icons.date_range,
                                           color: Colors.grey),
                                     ],
                                   ),
@@ -302,9 +300,9 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                       ),
                     ),
                     onPressed: () {},
-                    child: Text(
+                    child: const Text(
                       'Save as draft',
-                      style: TextStyle(color: const Color(0xFF9B6DFF)),
+                      style: TextStyle(color: Color(0xFF9B6DFF)),
                     ),
                   ),
                 ),

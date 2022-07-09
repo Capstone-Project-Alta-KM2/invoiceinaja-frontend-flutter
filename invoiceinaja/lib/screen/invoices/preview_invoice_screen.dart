@@ -9,7 +9,7 @@ class PreviewInvoice extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text('Preview Invoice'),
+        title: const Text('Preview Invoice'),
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
@@ -21,7 +21,7 @@ class PreviewInvoice extends StatelessWidget {
             size: 24,
           ),
         ),
-        titleTextStyle: TextStyle(color: Colors.black, fontSize: 16),
+        titleTextStyle: const TextStyle(color: Colors.black, fontSize: 16),
       ),
       backgroundColor: Colors.white,
       body: Padding(

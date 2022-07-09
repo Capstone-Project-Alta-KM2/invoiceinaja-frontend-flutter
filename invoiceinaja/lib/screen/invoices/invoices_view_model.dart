@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:invoiceinaja/model/api/api_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/invoice_model.dart';
 
@@ -14,9 +15,9 @@ enum InvoiceViewState {
 class InvoicesViewModel with ChangeNotifier {
   InvoiceViewState _state = InvoiceViewState.none;
   InvoiceViewState get state => _state;
-  var _listInvoices = <InvoiceModel>[];
+  List<InvoiceModel> _listInvoices = <InvoiceModel>[];
   List<InvoiceModel> get listInvoice => List.unmodifiable(_listInvoices);
-  var _listAllInvoices = [];
+  List<List<InvoiceModel>> _listAllInvoices = [];
   List<List<InvoiceModel>> get listAllInvoice =>
       List.unmodifiable(_listAllInvoices);
   // InvoiceModel _dataId = InvoiceModel();
@@ -38,9 +39,10 @@ class InvoicesViewModel with ChangeNotifier {
 
   Future deleteInvoice(String index) async {
     changeState(InvoiceViewState.loading);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      await ApiClient().deleteInvoice(index);
-      getData();
+      String? token = prefs.getString('token');
+      await ApiClient().deleteInvoice(index, token!);
       await Future.delayed(const Duration(seconds: 1));
       notifyListeners();
       changeState(InvoiceViewState.none);
@@ -50,34 +52,69 @@ class InvoicesViewModel with ChangeNotifier {
   }
 
   addInvoice(InvoiceModel invoice) async {
-    await ApiClient().addInvoice(invoice);
-    getData();
-    notifyListeners();
+    changeState(InvoiceViewState.loading);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      String? token = prefs.getString('token');
+      await ApiClient().addInvoice(invoice, token!);
+      await Future.delayed(const Duration(seconds: 1));
+      notifyListeners();
+      changeState(InvoiceViewState.none);
+    } catch (e) {
+      changeState(InvoiceViewState.error);
+    }
   }
 
   updateInvoice(InvoiceModel invoice, String id) async {
-    await ApiClient().updateInvoice(invoice, id);
-    getData();
-    notifyListeners();
+    changeState(InvoiceViewState.loading);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      String? token = prefs.getString('token');
+      await ApiClient().updateInvoice(invoice, id, token!);
+      await Future.delayed(const Duration(seconds: 1));
+      notifyListeners();
+      changeState(InvoiceViewState.none);
+    } catch (e) {
+      changeState(InvoiceViewState.error);
+    }
   }
 
-  getData() async {
+  Future getData() async {
     changeState(InvoiceViewState.loading);
-
+    await Future.delayed(const Duration(seconds: 2));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      final dataApi = await ApiClient().getDataInvoice();
+      String? token = prefs.getString('token');
+      final dataApi = await ApiClient().getDataInvoice(token!);
       _listInvoices = dataApi;
       _listAllInvoices = [
         _listInvoices,
+
         _listInvoices.where((element) => element.status == 'PAID').toList(),
+
         _listInvoices.where((element) => element.status == 'UNPAID').toList(),
+
         _listInvoices.where((element) => element.status == 'DRAFT').toList(),
+
         _listInvoices.where((element) => element.status == 'OVERDUE').toList(),
+
+        // [
+        //   InvoiceModel(
+        //       amount: 20000,
+        //       client: 'Ferdi',
+        //       status: 'PAID',
+        //       postDue: '26-07-2022')
+        // ],
+        // [],
+        // [],
+        // [],
+        // [],
       ];
       notifyListeners();
       changeState(InvoiceViewState.none);
     } catch (e) {
       changeState(InvoiceViewState.error);
+      print(e);
     }
 
     // List<String>? listKontak = sharedPrefs.getStringList('contact');

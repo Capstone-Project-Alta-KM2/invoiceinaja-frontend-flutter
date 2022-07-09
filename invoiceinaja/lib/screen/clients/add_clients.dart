@@ -3,7 +3,7 @@ import 'package:invoiceinaja/model/client_model.dart';
 import 'package:invoiceinaja/screen/clients/clients_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../clients/clinets_view_model.dart';
+import 'clinets_view_model.dart';
 import '../homepage/homepage_screen.dart';
 
 class AddClients extends StatefulWidget {

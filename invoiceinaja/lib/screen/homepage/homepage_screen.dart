@@ -14,12 +14,6 @@ class HomepageScreen extends StatefulWidget {
 
 class _HomepageScreenState extends State<HomepageScreen> {
   int indexHalaman = 0;
-  List judulHalaman = [
-    "Halaman Dashboard",
-    "Halaman Invoices",
-    "Halaman Clients",
-    "Halaman Settings",
-  ];
 
   List screen = [
     const DashboardScreen(),

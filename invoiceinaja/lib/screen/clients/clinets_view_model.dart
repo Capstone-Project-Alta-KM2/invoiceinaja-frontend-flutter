@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:invoiceinaja/model/api/api_client.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/client_model.dart';
 
@@ -26,8 +27,10 @@ class ClientsViewModel with ChangeNotifier {
 
   deleteClient(String index) async {
     changeState(ClientViewState.loading);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      await ApiClient().deleteClient(index);
+      String? token = prefs.getString('token');
+      await ApiClient().deleteClient(index, token!);
       getData();
       await Future.delayed(const Duration(seconds: 1));
       notifyListeners();
@@ -39,9 +42,11 @@ class ClientsViewModel with ChangeNotifier {
 
   Future addClient(ClientModel client) async {
     changeState(ClientViewState.loading);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      await ApiClient().addClient(client);
-
+      String? token = prefs.getString('token');
+      await ApiClient().addClient(client, token!).then((value) => print(value));
+      notifyListeners();
       changeState(ClientViewState.none);
     } catch (e) {
       changeState(ClientViewState.error);
@@ -51,8 +56,10 @@ class ClientsViewModel with ChangeNotifier {
 
   Future updateClient(ClientModel client, String id) async {
     changeState(ClientViewState.loading);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      await ApiClient().updateClient(client, id);
+      String? token = prefs.getString('token');
+      await ApiClient().updateClient(client, id, token!);
       notifyListeners();
       changeState(ClientViewState.none);
     } catch (e) {
@@ -60,16 +67,19 @@ class ClientsViewModel with ChangeNotifier {
     }
   }
 
-  getData() async {
+  Future getData() async {
     changeState(ClientViewState.loading);
-
+    await Future.delayed(const Duration(seconds: 2));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
-      final dataApi = await ApiClient().getDataClient();
+      String? token = prefs.getString('token');
+      final dataApi = await ApiClient().getDataClient(token!);
       _listClients = dataApi;
       notifyListeners();
       changeState(ClientViewState.none);
     } catch (e) {
       changeState(ClientViewState.error);
+      print(e);
     }
 
     // List<String>? listKontak = sharedPrefs.getStringList('contact');

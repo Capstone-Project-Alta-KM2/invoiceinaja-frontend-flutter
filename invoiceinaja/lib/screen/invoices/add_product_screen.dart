@@ -9,23 +9,23 @@ class AddProduct extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text('Add Product'),
+        title: const Text('Add Product'),
         centerTitle: true,
         leading: IconButton(
           onPressed: () {
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.arrow_back_ios_new,
             color: Colors.black,
             size: 24,
           ),
         ),
-        titleTextStyle: TextStyle(color: Colors.black, fontSize: 16),
+        titleTextStyle: const TextStyle(color: Colors.black, fontSize: 16),
       ),
       backgroundColor: Colors.white,
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: ListView(
           children: [
             Form(

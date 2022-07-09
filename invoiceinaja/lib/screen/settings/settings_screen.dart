@@ -48,7 +48,7 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    value.logout().then((value) {
+                    value.logout().then((data) {
                       if (value.state == SettingViewState.none) {
                         Navigator.pushAndRemoveUntil(
                           context,

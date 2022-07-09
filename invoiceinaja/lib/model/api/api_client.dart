@@ -65,8 +65,9 @@ class ApiClient {
     }
   }
 
-  Future<List<InvoiceModel>> getDataInvoice() async {
+  Future<List<InvoiceModel>> getDataInvoice(String token) async {
     try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
       Response<List<dynamic>> response = await dio.get('/invoices');
       List<InvoiceModel>? listData = response.data
           ?.map((invoice) => InvoiceModel.fromJson(invoice))
@@ -83,8 +84,9 @@ class ApiClient {
     }
   }
 
-  Future<Response> addInvoice(InvoiceModel invoice) async {
+  Future<Response> addInvoice(InvoiceModel invoice, String token) async {
     try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
       final response = await dio.post(
         '/invoices',
         data: jsonEncode(invoice.toJson()),
@@ -101,8 +103,10 @@ class ApiClient {
     }
   }
 
-  Future<Response> updateInvoice(InvoiceModel invoice, String id) async {
+  Future<Response> updateInvoice(
+      InvoiceModel invoice, String id, String token) async {
     try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
       final response = await dio.put(
         '/invoices/$id',
         data: jsonEncode(invoice.toJson()),
@@ -119,8 +123,9 @@ class ApiClient {
     }
   }
 
-  Future<Response> deleteInvoice(String id) async {
+  Future<Response> deleteInvoice(String id, String token) async {
     try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
       final response = await dio.delete(
         '/invoices/$id',
       );
@@ -136,8 +141,9 @@ class ApiClient {
     }
   }
 
-  Future<List<ClientModel>> getDataClient() async {
+  Future<List<ClientModel>> getDataClient(String token) async {
     try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
       Response<List<dynamic>> response = await dio.get('/clients');
       List<ClientModel>? listData =
           response.data?.map((client) => ClientModel.fromJson(client)).toList();
@@ -153,8 +159,9 @@ class ApiClient {
     }
   }
 
-  Future<Response> addClient(ClientModel client) async {
+  Future<Response> addClient(ClientModel client, String token) async {
     try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
       final response = await dio.post(
         '/clients',
         data: jsonEncode(client.toJson()),
@@ -171,8 +178,10 @@ class ApiClient {
     }
   }
 
-  Future<Response> updateClient(ClientModel client, String id) async {
+  Future<Response> updateClient(
+      ClientModel client, String id, String token) async {
     try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
       final response = await dio.put(
         '/invoices/$id',
         data: jsonEncode(client.toJson()),
@@ -189,8 +198,9 @@ class ApiClient {
     }
   }
 
-  Future<Response> deleteClient(String id) async {
+  Future<Response> deleteClient(String id, String token) async {
     try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
       final response = await dio.delete(
         '/clients/$id',
       );
