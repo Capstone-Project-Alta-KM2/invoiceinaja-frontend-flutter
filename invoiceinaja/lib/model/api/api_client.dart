@@ -32,7 +32,7 @@ class ApiClient {
           'password': password,
         },
       );
-      if (response.statusCode == 201) {
+      if (response.statusCode == 200) {
         return LoginModel.fromJson(response.data);
       } else {
         return throw Exception('Login Gagal');

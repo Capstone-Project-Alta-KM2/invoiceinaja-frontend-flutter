@@ -1,7 +1,17 @@
 import 'package:flutter/material.dart';
 
-class ResetPassword extends StatelessWidget {
+class ResetPassword extends StatefulWidget {
   const ResetPassword({Key? key}) : super(key: key);
+
+  @override
+  State<ResetPassword> createState() => _ResetPasswordState();
+}
+
+class _ResetPasswordState extends State<ResetPassword> {
+  bool isPasswordError = false;
+  bool _obscureOldPassword = true;
+  bool _obscureNewPassword = true;
+  bool _obscureConfirmNewPassword = true;
 
   @override
   Widget build(BuildContext context) {
@@ -41,9 +51,21 @@ class ResetPassword extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(top: 12),
                 child: TextFormField(
+                  obscureText: _obscureOldPassword,
                   decoration: InputDecoration(
-                    suffixIcon:
-                        const Icon(Icons.remove_red_eye, color: Colors.black),
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _obscureOldPassword = !_obscureOldPassword;
+                        });
+                      },
+                      child: Icon(
+                        _obscureOldPassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: isPasswordError ? Colors.red : Colors.black,
+                      ),
+                    ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5)),
                   ),
@@ -59,9 +81,21 @@ class ResetPassword extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(top: 12),
                 child: TextFormField(
+                  obscureText: _obscureNewPassword,
                   decoration: InputDecoration(
-                    suffixIcon:
-                        const Icon(Icons.remove_red_eye, color: Colors.black),
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _obscureNewPassword = !_obscureNewPassword;
+                        });
+                      },
+                      child: Icon(
+                        _obscureNewPassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: isPasswordError ? Colors.red : Colors.black,
+                      ),
+                    ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5)),
                   ),
@@ -77,9 +111,22 @@ class ResetPassword extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(top: 12),
                 child: TextFormField(
+                  obscureText: _obscureConfirmNewPassword,
                   decoration: InputDecoration(
-                    suffixIcon:
-                        const Icon(Icons.remove_red_eye, color: Colors.black),
+                    suffixIcon: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _obscureConfirmNewPassword =
+                              !_obscureConfirmNewPassword;
+                        });
+                      },
+                      child: Icon(
+                        _obscureConfirmNewPassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: isPasswordError ? Colors.red : Colors.black,
+                      ),
+                    ),
                     border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5)),
                   ),
