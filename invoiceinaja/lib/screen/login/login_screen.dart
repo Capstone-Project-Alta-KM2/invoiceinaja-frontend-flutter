@@ -38,6 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final form = _formKey.currentState;
     return Scaffold(
       backgroundColor: Colors.white,
       body: Consumer<LoginViewModel>(
@@ -111,8 +112,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: TextFormField(
                             keyboardType: TextInputType.emailAddress,
                             cursorColor: Colors.black,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
                             controller: _emailController,
                             validator: (email) {
                               if (email == null || email.isEmpty) {
@@ -166,8 +165,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: TextFormField(
                             obscureText: _obscurepasswordLogin,
                             cursorColor: Colors.black,
-                            autovalidateMode:
-                                AutovalidateMode.onUserInteraction,
                             controller: _passwordController,
                             onChanged: (password) {
                               if (password.isEmpty) {
@@ -300,9 +297,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              onPressed: _formKey.currentState == null
+                              onPressed: form == null
                                   ? null
-                                  : _formKey.currentState!.validate()
+                                  : form.validate()
                                       ? () {
                                           final form = _formKey.currentState!;
                                           if (form.validate()) {

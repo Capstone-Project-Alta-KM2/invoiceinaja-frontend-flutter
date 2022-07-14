@@ -10,6 +10,7 @@ enum ClientViewState {
   none,
   loading,
   error,
+  tokenExpired,
 }
 
 class ClientsViewModel with ChangeNotifier {
@@ -25,14 +26,13 @@ class ClientsViewModel with ChangeNotifier {
     notifyListeners();
   }
 
-  deleteClient(String index) async {
+  Future deleteClient(int index) async {
     changeState(ClientViewState.loading);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String? token = prefs.getString('token');
       await ApiClient().deleteClient(index, token!);
       getData();
-      await Future.delayed(const Duration(seconds: 1));
       notifyListeners();
       changeState(ClientViewState.none);
     } catch (e) {
@@ -50,11 +50,10 @@ class ClientsViewModel with ChangeNotifier {
       changeState(ClientViewState.none);
     } catch (e) {
       changeState(ClientViewState.error);
-      print(e);
     }
   }
 
-  Future updateClient(ClientModel client, String id) async {
+  Future updateClient(ClientModel client, int id) async {
     changeState(ClientViewState.loading);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
@@ -69,7 +68,6 @@ class ClientsViewModel with ChangeNotifier {
 
   Future getData() async {
     changeState(ClientViewState.loading);
-    await Future.delayed(const Duration(seconds: 2));
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String? token = prefs.getString('token');
@@ -78,8 +76,11 @@ class ClientsViewModel with ChangeNotifier {
       notifyListeners();
       changeState(ClientViewState.none);
     } catch (e) {
-      changeState(ClientViewState.error);
-      print(e);
+      if (e.toString().contains('Token Expired')) {
+        changeState(ClientViewState.tokenExpired);
+      } else {
+        changeState(ClientViewState.error);
+      }
     }
 
     // List<String>? listKontak = sharedPrefs.getStringList('contact');
@@ -92,6 +93,19 @@ class ClientsViewModel with ChangeNotifier {
     // }
   }
 
+  Future logout() async {
+    changeState(ClientViewState.loading);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    try {
+      await prefs.remove('email');
+      await prefs.remove('avatar');
+      await prefs.remove('token');
+      changeState(ClientViewState.none);
+    } catch (e) {
+      changeState(ClientViewState.error);
+    }
+  }
   // getDataId(String id) async {
   //   changeState(InvoiceViewState.loading);
 

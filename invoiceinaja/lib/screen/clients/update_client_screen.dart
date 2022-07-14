@@ -5,20 +5,35 @@ import 'package:provider/provider.dart';
 import 'clinets_view_model.dart';
 import '../homepage/homepage_screen.dart';
 
-class AddClients extends StatefulWidget {
-  const AddClients({Key? key}) : super(key: key);
+class UpdateClients extends StatefulWidget {
+  final int id;
+  final String clientName;
+  final String address;
+  final String city;
+  final String email;
+  final String zipCode;
+  final String company;
+  const UpdateClients({
+    Key? key,
+    required this.id,
+    required this.clientName,
+    required this.address,
+    required this.city,
+    required this.email,
+    required this.zipCode,
+    required this.company,
+  }) : super(key: key);
 
   @override
-  State<AddClients> createState() => _AddClientsState();
+  State<UpdateClients> createState() => _UpdateClientsState();
 }
 
-class _AddClientsState extends State<AddClients> {
+class _UpdateClientsState extends State<UpdateClients> {
   final _formKey = GlobalKey<FormState>();
 
   final _clientNameController = TextEditingController();
   final _addressController = TextEditingController();
   final _cityController = TextEditingController();
-  final _phoneNumberController = TextEditingController();
   final _emailController = TextEditingController();
   final _zipCodeController = TextEditingController();
   final _companyController = TextEditingController();
@@ -28,11 +43,21 @@ class _AddClientsState extends State<AddClients> {
     _clientNameController.dispose();
     _addressController.dispose();
     _cityController.dispose();
-    _phoneNumberController.dispose();
     _emailController.dispose();
     _zipCodeController.dispose();
     _companyController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _clientNameController.text = widget.clientName;
+    _addressController.text = widget.address;
+    _cityController.text = widget.city;
+    _emailController.text = widget.email;
+    _zipCodeController.text = widget.zipCode;
+    _companyController.text = widget.company;
   }
 
   @override
@@ -109,17 +134,6 @@ class _AddClientsState extends State<AddClients> {
                       child: const Text(
                         'Phone Number',
                         style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      child: TextFormField(
-                        controller: _phoneNumberController,
-                        decoration: InputDecoration(
-                          hintText: 'Phone Number',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                        ),
                       ),
                     ),
                     Container(
@@ -229,7 +243,7 @@ class _AddClientsState extends State<AddClients> {
                                 zipCode: _zipCodeController.text,
                                 company: _companyController.text,
                               );
-                              data.addClient(dataClient).then(
+                              data.updateClient(dataClient, widget.id).then(
                                 (value) {
                                   if (data.state == ClientViewState.none) {
                                     Navigator.pushAndRemoveUntil(

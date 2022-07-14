@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'screen/clients/clinets_view_model.dart';
+import 'screen/dashboard/dashboard_view_model.dart';
 import 'screen/homepage/homepage_screen.dart';
 
 import 'screen/invoices/invoices_view_model.dart';
@@ -57,6 +58,9 @@ class _InvoiceinAjaState extends State<InvoiceinAja> {
         ),
         ChangeNotifierProvider(
           create: (context) => ClientsViewModel(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => DashBoardsViewModel(),
         ),
       ],
       child: MaterialApp(

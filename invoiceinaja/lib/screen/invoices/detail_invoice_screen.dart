@@ -1,34 +1,30 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:invoiceinaja/model/post_invoice_model.dart';
-import 'package:invoiceinaja/screen/homepage/homepage_screen.dart';
-import 'package:provider/provider.dart';
+import 'package:invoiceinaja/model/invoice_model.dart';
 
-import 'invoices_view_model.dart';
-
-class PreviewInvoice extends StatelessWidget {
+class DetailInvoiceScreen extends StatelessWidget {
   final int id;
   final String nama;
-  final String alamat;
-  final String email;
+  final String status;
   final String invoiceDate;
   final String invoiceDueDate;
-  final List<DetailInvoice> listDetailInvoice;
-  const PreviewInvoice({
+  final int amount;
+  final List<Items> listItems;
+  const DetailInvoiceScreen({
     Key? key,
     required this.id,
     required this.nama,
-    required this.alamat,
-    required this.email,
+    required this.status,
     required this.invoiceDate,
     required this.invoiceDueDate,
-    required this.listDetailInvoice,
+    required this.amount,
+    required this.listItems,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final data = Provider.of<InvoicesViewModel>(context);
+    final formatCurrency = NumberFormat.simpleCurrency(locale: 'id_ID');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -79,57 +75,89 @@ class PreviewInvoice extends StatelessWidget {
                                 Text(nama),
                               ],
                             ),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: const Color(0xFFFFCC00).withOpacity(0.2),
-                              ),
-                              child: const Padding(
-                                padding: EdgeInsets.only(
-                                  left: 15,
-                                  right: 15,
-                                  top: 5,
-                                  bottom: 5,
+                            if (status.toLowerCase() == 'unpaid')
+                              Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color(0xFFFFCC00).withOpacity(0.2),
                                 ),
-                                child: Text(
-                                  'Unpaid',
-                                  style: TextStyle(color: Color(0xFFFFCC00)),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 15,
+                                    right: 15,
+                                    top: 5,
+                                    bottom: 5,
+                                  ),
+                                  child: Text(
+                                    status,
+                                    style: const TextStyle(
+                                      color: Color(0xFFFFCC00),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Email',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(email),
-                          ],
-                        ),
-                      ),
-                      Padding(
-                        padding:
-                            const EdgeInsets.only(top: 20, left: 20, right: 20),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              'Street',
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Text(alamat)
+                            if (status.toLowerCase() == 'paid')
+                              Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color(0xFF87E460).withOpacity(0.2),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 15,
+                                    right: 15,
+                                    top: 5,
+                                    bottom: 5,
+                                  ),
+                                  child: Text(
+                                    status,
+                                    style: const TextStyle(
+                                      color: Color(0xFF87E460),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (status.toLowerCase() == 'overdue')
+                              Container(
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color(0xFFFF304C).withOpacity(0.2),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 15,
+                                    right: 15,
+                                    top: 5,
+                                    bottom: 5,
+                                  ),
+                                  child: Text(
+                                    status,
+                                    style: const TextStyle(
+                                      color: Color(0xFFFF304C),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            if (status.toLowerCase() == 'draft')
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withOpacity(0.2),
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 15,
+                                    right: 15,
+                                    top: 5,
+                                    bottom: 5,
+                                  ),
+                                  child: Text(
+                                    status,
+                                    style: const TextStyle(
+                                      color: Colors.grey,
+                                    ),
+                                  ),
+                                ),
+                              ),
                           ],
                         ),
                       ),
@@ -151,7 +179,8 @@ class PreviewInvoice extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.all(20),
+                        padding:
+                            const EdgeInsets.only(top: 20, left: 20, right: 20),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -166,13 +195,31 @@ class PreviewInvoice extends StatelessWidget {
                           ],
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Payment Total',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              formatCurrency.format(amount),
+                            ),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 20, bottom: 20),
                   child: Text(
-                    'Total Product : ${listDetailInvoice.length}',
+                    'Total Product : ${listItems.length}',
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
@@ -180,7 +227,7 @@ class PreviewInvoice extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
                   itemBuilder: (context, index) {
-                    var dataIndex = listDetailInvoice[index];
+                    var dataIndex = listItems[index];
                     final formatCurrency =
                         NumberFormat.simpleCurrency(locale: 'id_ID');
                     final totalPrice =
@@ -254,56 +301,7 @@ class PreviewInvoice extends StatelessWidget {
                       ),
                     );
                   },
-                  itemCount: listDetailInvoice.length,
-                ),
-                Container(
-                  margin: const EdgeInsets.only(top: 30, bottom: 10),
-                  width: double.infinity,
-                  height: 45,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xFF9B6DFF),
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    onPressed: () {
-                      final int totalAmount = listDetailInvoice
-                          .map((e) => e.price! * e.quantity!)
-                          .fold(
-                              0,
-                              (previousValue, element) =>
-                                  previousValue + element);
-                      data
-                          .addInvoice(
-                            PostInvoice(
-                              invoice: Invoice(
-                                clientId: id,
-                                invoiceDate: invoiceDate,
-                                invoiceDue: invoiceDate,
-                                totalAmount: totalAmount,
-                              ),
-                              detailInvoice: listDetailInvoice,
-                            ),
-                          )
-                          .then(
-                            (value) => Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const HomepageScreen(),
-                              ),
-                              (Route<dynamic> route) => false,
-                            ),
-                          );
-                    },
-                    child: const Text(
-                      'Send Invoice',
-                    ),
-                  ),
+                  itemCount: listItems.length,
                 ),
               ],
             ),

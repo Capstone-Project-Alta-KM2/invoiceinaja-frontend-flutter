@@ -1,6 +1,11 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:invoiceinaja/model/client_model.dart';
 import 'package:invoiceinaja/screen/invoices/add_product_screen.dart';
+import 'package:invoiceinaja/screen/invoices/invoices_view_model.dart';
 import 'package:invoiceinaja/screen/invoices/preview_invoice_screen.dart';
+import 'package:provider/provider.dart';
 
 class CreateInvoice extends StatefulWidget {
   const CreateInvoice({Key? key}) : super(key: key);
@@ -10,8 +15,38 @@ class CreateInvoice extends StatefulWidget {
 }
 
 class _CreateInvoiceState extends State<CreateInvoice> {
+  DateTime? selectedDate;
+  DateTime? selectedDueDate;
+  int? id;
+  final _namaController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _addressController = TextEditingController();
+  final _companyController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    super.dispose();
+    _namaController.dispose();
+    _emailController.dispose();
+    _addressController.dispose();
+    _companyController.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      var viewModel = Provider.of<InvoicesViewModel>(context, listen: false);
+      await viewModel.getDataClient();
+      viewModel.listItems.clear();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final data = Provider.of<InvoicesViewModel>(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -34,8 +69,10 @@ class _CreateInvoiceState extends State<CreateInvoice> {
       body: Padding(
         padding: const EdgeInsets.all(10),
         child: ListView(
+          physics: const BouncingScrollPhysics(),
           children: [
             Form(
+              key: _formKey,
               child: Card(
                 elevation: 5,
                 shadowColor: const Color(0xFF9B6DFF),
@@ -53,15 +90,49 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
                       ),
-                      Container(
-                        margin: const EdgeInsets.only(top: 12),
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            hintText: 'Name',
-                            border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(5)),
-                          ),
-                        ),
+                      Autocomplete<ClientModel>(
+                        optionsBuilder: (TextEditingValue value) {
+                          if (value.text.isEmpty) {
+                            return List.empty();
+                          } else {
+                            return data.listClients
+                                .where(
+                                  (element) =>
+                                      element.fullname!.toLowerCase().contains(
+                                            value.text.toLowerCase(),
+                                          ),
+                                )
+                                .toList();
+                          }
+                        },
+                        displayStringForOption: (ClientModel client) =>
+                            '${client.fullname}',
+                        fieldViewBuilder: (BuildContext context,
+                            TextEditingController controller,
+                            FocusNode node,
+                            Function onSubmit) {
+                          return Container(
+                            margin: const EdgeInsets.only(top: 12),
+                            child: TextFormField(
+                              controller: controller,
+                              focusNode: node,
+                              decoration: InputDecoration(
+                                hintText: 'Name',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(5)),
+                              ),
+                            ),
+                          );
+                        },
+                        onSelected: (value) {
+                          setState(() {
+                            id = value.id!;
+                            _namaController.text = value.fullname!;
+                            _emailController.text = value.email!;
+                            _addressController.text = value.address!;
+                            _companyController.text = value.company!;
+                          });
+                        },
                       ),
                       Container(
                         margin: const EdgeInsets.only(top: 20),
@@ -73,6 +144,7 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                       Container(
                         margin: const EdgeInsets.only(top: 12),
                         child: TextFormField(
+                          controller: _emailController,
                           decoration: InputDecoration(
                             hintText: 'Email',
                             border: OutlineInputBorder(
@@ -90,6 +162,7 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                       Container(
                         margin: const EdgeInsets.only(top: 12),
                         child: TextFormField(
+                          controller: _addressController,
                           decoration: InputDecoration(
                             hintText: 'Address',
                             border: OutlineInputBorder(
@@ -107,6 +180,7 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                       Container(
                         margin: const EdgeInsets.only(top: 12),
                         child: TextFormField(
+                          controller: _companyController,
                           decoration: InputDecoration(
                             hintText: 'Company',
                             border: OutlineInputBorder(
@@ -115,7 +189,7 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                         ),
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -134,19 +208,32 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                                 height: 60,
                                 child: OutlinedButton(
                                   child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text(
-                                        'mm/dd/yyyy',
-                                        style: TextStyle(color: Colors.grey),
+                                      Text(
+                                        selectedDate == null
+                                            ? 'dd/mm/yyyy'
+                                            : DateFormat('dd-MM-yyyy')
+                                                .format(selectedDate!),
+                                        style: TextStyle(
+                                          color: selectedDate == null
+                                              ? Colors.grey
+                                              : Colors.black,
+                                        ),
                                       ),
-                                      const Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5)),
-                                      const Icon(Icons.date_range,
-                                          color: Colors.grey),
+                                      Icon(
+                                        Icons.date_range,
+                                        color: selectedDate == null
+                                            ? Colors.grey
+                                            : Colors.black,
+                                      ),
                                     ],
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showDate();
+                                    FocusScope.of(context).unfocus();
+                                  },
                                 ),
                               ),
                             ],
@@ -168,19 +255,32 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                                 height: 60,
                                 child: OutlinedButton(
                                   child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text(
-                                        'mm/dd/yyyy',
-                                        style: TextStyle(color: Colors.grey),
+                                      Text(
+                                        selectedDueDate == null
+                                            ? 'dd/mm/yyyy'
+                                            : DateFormat('dd-MM-yyyy')
+                                                .format(selectedDueDate!),
+                                        style: TextStyle(
+                                          color: selectedDueDate == null
+                                              ? Colors.grey
+                                              : Colors.black,
+                                        ),
                                       ),
-                                      const Padding(
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 5)),
-                                      const Icon(Icons.date_range,
-                                          color: Colors.grey),
+                                      Icon(
+                                        Icons.date_range,
+                                        color: selectedDueDate == null
+                                            ? Colors.grey
+                                            : Colors.black,
+                                      ),
                                     ],
                                   ),
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    showDueDate();
+                                    FocusScope.of(context).unfocus();
+                                  },
                                 ),
                               ),
                             ],
@@ -201,7 +301,10 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                 child: ListTile(
                   leading: Padding(
                     padding: EdgeInsets.all(8),
-                    child: Icon(Icons.add_box, color: Color(0xFF9B6DFF)),
+                    child: Icon(
+                      CupertinoIcons.cube,
+                      color: Color(0xFF9B6DFF),
+                    ),
                   ),
                   title: Text(
                     'Add Product',
@@ -219,71 +322,93 @@ class _CreateInvoiceState extends State<CreateInvoice> {
             ),
             Container(
               margin: const EdgeInsets.only(top: 20, bottom: 20),
-              child: const Text(
-                'Total Product : 1',
-                style: TextStyle(fontWeight: FontWeight.bold),
+              child: Text(
+                'Total Product : ${data.listItems.length}',
+                style: const TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
-            Card(
-              elevation: 5,
-              child: Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: const [
-                        Icon(
-                          Icons.add_box,
-                          color: Color(0xFF9B6DFF),
+            ListView.builder(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              itemBuilder: (context, index) {
+                var dataIndex = data.listItems[index];
+                final formatCurrency =
+                    NumberFormat.simpleCurrency(locale: 'id_ID');
+                final totalPrice =
+                    dataIndex.quantity!.toInt() * dataIndex.price!.toInt();
+                return Card(
+                  elevation: 5,
+                  child: Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Icon(
+                              CupertinoIcons.cube,
+                              color: Color(0xFF9B6DFF),
+                            ),
+                            const SizedBox(width: 20),
+                            Text('${dataIndex.itemName}'),
+                          ],
                         ),
-                        SizedBox(width: 20),
-                        Text('Mousepad XXL')
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [Text('Deskripsi'), Text('Mousepad XXL')],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [Text('Quantity'), Text('3')],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [Text('Price'), Text('Rp. 150.000')],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Text(
-                          'Total',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Deskripsi'),
+                            Text('${dataIndex.itemName}')
+                          ],
                         ),
-                        Text(
-                          'Rp. 450.000',
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        )
-                      ],
-                    ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Quantity'),
+                            Text('${dataIndex.quantity}'),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text('Price'),
+                            Text(formatCurrency.format(dataIndex.price)),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const Text(
+                              'Total',
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              formatCurrency.format(totalPrice),
+                              style:
+                                  const TextStyle(fontWeight: FontWeight.bold),
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                );
+              },
+              itemCount: data.listItems.length,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 Container(
                   margin: const EdgeInsets.only(top: 20, bottom: 10),
@@ -322,10 +447,42 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                       ),
                     ),
                     onPressed: () {
-                      Navigator.push(
+                      if (_emailController.text.isEmpty ||
+                          _namaController.text.isEmpty ||
+                          _addressController.text.isEmpty ||
+                          selectedDate.toString().isEmpty ||
+                          selectedDueDate.toString().isEmpty ||
+                          data.listItems.isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Container(
+                              width: double.infinity,
+                              height: 50,
+                              alignment: Alignment.center,
+                              child: const Text(
+                                  "Please fill all the data in the form"),
+                            ),
+                            backgroundColor: Theme.of(context).errorColor,
+                          ),
+                        );
+                      } else {
+                        Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => const PreviewInvoice()));
+                            builder: (context) => PreviewInvoice(
+                              id: id!,
+                              nama: _namaController.text,
+                              email: _emailController.text,
+                              alamat: _addressController.text,
+                              invoiceDate: DateFormat('dd-MM-yyyy')
+                                  .format(selectedDate!),
+                              invoiceDueDate: DateFormat('dd-MM-yyyy')
+                                  .format(selectedDueDate!),
+                              listDetailInvoice: data.listItems,
+                            ),
+                          ),
+                        );
+                      }
                     },
                     child: const Text(
                       'Preview',
@@ -338,5 +495,35 @@ class _CreateInvoiceState extends State<CreateInvoice> {
         ),
       ),
     );
+  }
+
+  void showDate() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 730),
+      ),
+    ).then((date) {
+      setState(() {
+        selectedDate = date;
+      });
+    });
+  }
+
+  void showDueDate() {
+    showDatePicker(
+      context: context,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(
+        const Duration(days: 730),
+      ),
+      initialDate: DateTime.now(),
+    ).then((date) {
+      setState(() {
+        selectedDueDate = date;
+      });
+    });
   }
 }

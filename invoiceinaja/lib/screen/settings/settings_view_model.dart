@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../model/api/api_client.dart';
-
 enum SettingViewState {
   none,
   loading,
@@ -31,7 +29,6 @@ class SettingViewModel with ChangeNotifier {
       changeState(SettingViewState.none);
     } catch (e) {
       changeState(SettingViewState.error);
-      print(e);
     }
   }
 }

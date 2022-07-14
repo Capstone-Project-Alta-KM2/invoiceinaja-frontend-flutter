@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:invoiceinaja/screen/invoices/create_invoice_screen.dart';
+import 'package:invoiceinaja/screen/invoices/detail_invoice_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../login/login_screen.dart';
 import 'invoices_view_model.dart';
 
 class InvoicesScreen extends StatefulWidget {
@@ -27,11 +30,11 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final data = Provider.of<InvoicesViewModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Consumer<InvoicesViewModel>(
         builder: (context, value, child) {
-          print(value.state);
           return SafeArea(
             child: Column(
               children: [
@@ -158,6 +161,165 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                       ),
                                     );
                                   }
+                                  if (value.state ==
+                                      InvoiceViewState.tokenExpired) {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          title: Container(
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                color: Colors.red,
+                                                width: 5,
+                                              ),
+                                            ),
+                                            child: const Icon(
+                                              Icons.clear_sharp,
+                                              color: Colors.red,
+                                              size: 80,
+                                            ),
+                                          ),
+                                          content: const Text(
+                                            'Your session has expired, please login again',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                value.logout().then(
+                                                  (_) {
+                                                    Navigator
+                                                        .pushAndRemoveUntil(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const LoginScreen(),
+                                                      ),
+                                                      (Route<dynamic> route) =>
+                                                          false,
+                                                    );
+                                                  },
+                                                );
+                                              },
+                                              child: const Text(
+                                                'Login Again',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
+                                },
+                              );
+                            },
+                            child: Container(
+                              width: 80,
+                              height: 80,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.purple,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 7,
+                                    blurRadius:
+                                        10, // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.refresh,
+                                color: Colors.white,
+                                size: 60,
+                              ),
+                            ),
+                          ),
+                        );
+                      }
+                      if (value.state == InvoiceViewState.tokenExpired) {
+                        return Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              value.getData().then(
+                                (data) {
+                                  if (value.state ==
+                                      InvoiceViewState.tokenExpired) {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20),
+                                          ),
+                                          title: Container(
+                                            alignment: Alignment.center,
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.white,
+                                              border: Border.all(
+                                                color: Colors.red,
+                                                width: 5,
+                                              ),
+                                            ),
+                                            child: const Icon(
+                                              Icons.clear_sharp,
+                                              color: Colors.red,
+                                              size: 80,
+                                            ),
+                                          ),
+                                          content: const Text(
+                                            'Your session has expired, please login again',
+                                            textAlign: TextAlign.center,
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                            ),
+                                          ),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () =>
+                                                  value.logout().then(
+                                                (_) {
+                                                  Navigator.pushAndRemoveUntil(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) =>
+                                                          const LoginScreen(),
+                                                    ),
+                                                    (Route<dynamic> route) =>
+                                                        false,
+                                                  );
+                                                },
+                                              ),
+                                              child: const Text(
+                                                'Login Again',
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  }
                                 },
                               );
                             },
@@ -233,6 +395,9 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                               hasScrollBody: false,
                               child: Column(
                                 children: dataList.map((i) {
+                                  final formatCurrency =
+                                      NumberFormat.simpleCurrency(
+                                          locale: 'id_ID');
                                   return Container(
                                     margin: const EdgeInsets.all(10.0),
                                     child: Card(
@@ -288,7 +453,9 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                 margin: const EdgeInsets.only(
                                                     bottom: 5),
                                                 child: Text(
-                                                  i.postDue!,
+                                                  DateFormat.yMMMMd().format(
+                                                      DateFormat('dd-MM-yyyy')
+                                                          .parse(i.postDue!)),
                                                   style: const TextStyle(
                                                     fontSize: 13,
                                                     color: Colors.black,
@@ -296,7 +463,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                 ),
                                               ),
                                               Text(
-                                                i.amount.toString(),
+                                                formatCurrency.format(i.amount),
                                                 style: const TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.black,
@@ -311,85 +478,288 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.end,
                                             children: [
-                                              const Icon(
-                                                Icons.more_horiz,
-                                                color: Colors.black,
-                                                size: 25,
+                                              GestureDetector(
+                                                onTap: () {
+                                                  showModalBottomSheet(
+                                                    context: context,
+                                                    shape:
+                                                        const RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(25),
+                                                        topRight:
+                                                            Radius.circular(25),
+                                                      ),
+                                                    ),
+                                                    builder: (context) {
+                                                      return Container(
+                                                        margin: const EdgeInsets
+                                                            .all(20),
+                                                        child: Row(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .spaceAround,
+                                                          children: [
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                Navigator.push(
+                                                                  context,
+                                                                  MaterialPageRoute(
+                                                                    builder:
+                                                                        (context) =>
+                                                                            DetailInvoiceScreen(
+                                                                      id: i.id!,
+                                                                      nama: i
+                                                                          .client!,
+                                                                      invoiceDate:
+                                                                          i.date!,
+                                                                      invoiceDueDate:
+                                                                          i.postDue!,
+                                                                      amount: i
+                                                                          .amount!,
+                                                                      status: i
+                                                                          .status!,
+                                                                      listItems:
+                                                                          i.items!,
+                                                                    ),
+                                                                  ),
+                                                                )
+                                                                    .then(
+                                                                      (value) =>
+                                                                          Navigator.pop(
+                                                                              context),
+                                                                    )
+                                                                    .then(
+                                                                      (value) =>
+                                                                          data.getData(),
+                                                                    );
+                                                              },
+                                                              child: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Container(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .center,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .circle,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      border:
+                                                                          Border
+                                                                              .all(
+                                                                        color: Colors
+                                                                            .purple,
+                                                                        width:
+                                                                            5,
+                                                                      ),
+                                                                    ),
+                                                                    child:
+                                                                        const Padding(
+                                                                      padding:
+                                                                          EdgeInsets.all(
+                                                                              8.0),
+                                                                      child:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .newspaper_sharp,
+                                                                        color: Colors
+                                                                            .purple,
+                                                                        size:
+                                                                            50,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Container(
+                                                                    margin:
+                                                                        const EdgeInsets
+                                                                            .only(
+                                                                      top: 20,
+                                                                    ),
+                                                                    child:
+                                                                        const Text(
+                                                                      'Preview Invoice',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .purple,
+                                                                        fontSize:
+                                                                            18,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            GestureDetector(
+                                                              onTap: () {
+                                                                data
+                                                                    .deleteInvoice(
+                                                                        i.id!)
+                                                                    .then(
+                                                                      (value) =>
+                                                                          Navigator.pop(
+                                                                              context),
+                                                                    );
+                                                              },
+                                                              child: Column(
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Container(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .center,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      shape: BoxShape
+                                                                          .circle,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      border:
+                                                                          Border
+                                                                              .all(
+                                                                        color: Colors
+                                                                            .red,
+                                                                        width:
+                                                                            5,
+                                                                      ),
+                                                                    ),
+                                                                    child:
+                                                                        const Padding(
+                                                                      padding:
+                                                                          EdgeInsets.all(
+                                                                              8.0),
+                                                                      child:
+                                                                          Icon(
+                                                                        Icons
+                                                                            .delete_sharp,
+                                                                        color: Colors
+                                                                            .red,
+                                                                        size:
+                                                                            50,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Container(
+                                                                    margin:
+                                                                        const EdgeInsets
+                                                                            .only(
+                                                                      top: 20,
+                                                                    ),
+                                                                    child:
+                                                                        const Text(
+                                                                      'Delete Invoice',
+                                                                      style:
+                                                                          TextStyle(
+                                                                        color: Colors
+                                                                            .red,
+                                                                        fontSize:
+                                                                            18,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      );
+                                                    },
+                                                  );
+                                                },
+                                                child: const Icon(
+                                                  Icons.more_horiz,
+                                                  color: Colors.black,
+                                                  size: 25,
+                                                ),
                                               ),
                                               if (i.status == 'Paid' ||
                                                   i.status == 'PAID')
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        const Color(0xFF87E460)
-                                                            .withOpacity(0.2),
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                      left: 15,
-                                                      right: 15,
-                                                      top: 5,
-                                                      bottom: 5,
+                                                Expanded(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(
+                                                              0xFF87E460)
+                                                          .withOpacity(0.2),
                                                     ),
-                                                    child: Text(
-                                                      i.status!,
-                                                      style: const TextStyle(
-                                                        fontSize: 13,
-                                                        color:
-                                                            Color(0xFF87E460),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                        left: 15,
+                                                        right: 15,
+                                                        top: 5,
+                                                        bottom: 5,
+                                                      ),
+                                                      child: Text(
+                                                        i.status!,
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                          color:
+                                                              Color(0xFF87E460),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               if (i.status == 'Unpaid' ||
                                                   i.status == 'UNPAID')
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        const Color(0xFFFFCC00)
-                                                            .withOpacity(0.2),
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                      left: 15,
-                                                      right: 15,
-                                                      top: 5,
-                                                      bottom: 5,
+                                                Expanded(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(
+                                                              0xFFFFCC00)
+                                                          .withOpacity(0.2),
                                                     ),
-                                                    child: Text(
-                                                      i.status!,
-                                                      style: const TextStyle(
-                                                        fontSize: 13,
-                                                        color:
-                                                            Color(0xFFFFCC00),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                        left: 15,
+                                                        right: 15,
+                                                        top: 5,
+                                                        bottom: 5,
+                                                      ),
+                                                      child: Text(
+                                                        i.status!,
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                          color:
+                                                              Color(0xFFFFCC00),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
                                                 ),
                                               if (i.status == 'Overdue' ||
                                                   i.status == 'OVERDUE')
-                                                Container(
-                                                  decoration: BoxDecoration(
-                                                    color:
-                                                        const Color(0xFFFF304C)
-                                                            .withOpacity(0.2),
-                                                  ),
-                                                  child: Padding(
-                                                    padding:
-                                                        const EdgeInsets.only(
-                                                      left: 15,
-                                                      right: 15,
-                                                      top: 5,
-                                                      bottom: 5,
+                                                Expanded(
+                                                  child: Container(
+                                                    decoration: BoxDecoration(
+                                                      color: const Color(
+                                                              0xFFFF304C)
+                                                          .withOpacity(0.2),
                                                     ),
-                                                    child: Text(
-                                                      i.status!,
-                                                      style: const TextStyle(
-                                                        fontSize: 13,
-                                                        color:
-                                                            Color(0xFFFF304C),
+                                                    child: Padding(
+                                                      padding:
+                                                          const EdgeInsets.only(
+                                                        left: 15,
+                                                        right: 15,
+                                                        top: 5,
+                                                        bottom: 5,
+                                                      ),
+                                                      child: Text(
+                                                        i.status!,
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                          color:
+                                                              Color(0xFFFF304C),
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
@@ -415,10 +785,15 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const CreateInvoice()));
-        },
+        onPressed: data.state == InvoiceViewState.error ||
+                data.state == InvoiceViewState.tokenExpired
+            ? null
+            : () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CreateInvoice()));
+              },
         backgroundColor: const Color(0xFF9B6DFF),
         elevation: 8,
         child: const Icon(

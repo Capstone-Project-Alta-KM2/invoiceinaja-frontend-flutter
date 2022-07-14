@@ -2,8 +2,10 @@ import 'dart:math';
 
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:invoiceinaja/screen/dashboard/dashboard_view_model.dart';
+import 'package:provider/provider.dart';
 import '../../model/chart_model.dart';
-import '../../model/invoices_model.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({Key? key}) : super(key: key);
@@ -13,14 +15,8 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  String value = '';
-  var dropItems = [
-    'Monthly',
-    'Weekly',
-  ];
-
   final List<ChartModel> dataChart = List.generate(
-    6,
+    12,
     (index) => ChartModel(
       x: index,
       y1: Random().nextInt(20) + Random().nextDouble(),
@@ -28,19 +24,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
     ),
   );
 
-  final List<InvoicesModel> dataInvoices = List.generate(
-    6,
-    (index) => InvoicesModel(
-      namaClient: "Ilham Ganteng",
-      tanggalInvoices: "July 03, 2022",
-      totalInvoices: "Rp 2.500.000",
-      statusPembayaran: "Unpaid",
-    ),
-  );
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      var viewModel = Provider.of<DashBoardsViewModel>(context, listen: false);
+      await viewModel.getDataOverall();
+      await viewModel.getDataGraphic();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+    final data = Provider.of<DashBoardsViewModel>(context);
+    final formatCurrency = NumberFormat.simpleCurrency(locale: 'id_ID');
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -87,6 +86,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: ListView(
+            physics: const BouncingScrollPhysics(),
             children: [
               const SizedBox(
                 height: 15,
@@ -102,7 +102,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     color: Colors.white,
-                    child: SizedBox(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.green,
+                            Colors.greenAccent,
+                            Colors.green.shade400,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
                       height: 110,
                       width: size.width * 0.455,
                       child: Padding(
@@ -111,33 +125,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
+                              children: const [
+                                Text(
                                   'Total Paid',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.only(left: 5),
-                                  decoration: BoxDecoration(
-                                    color: const Color(0xff87E460)
-                                        .withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(5.0),
-                                    child: Text(
-                                      '+25%',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Color(0xff87E460),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ],
@@ -146,13 +140,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               'Terbayar',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey,
+                                color: Colors.black54,
                               ),
                             ),
                             const Spacer(),
-                            const Text(
-                              'Rp. 25.000.000',
-                              style: TextStyle(
+                            Text(
+                              formatCurrency.format(data.overallData.paid),
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -171,41 +165,36 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
                     ),
                     color: Colors.white,
-                    child: SizedBox(
+                    child: Container(
                       height: 110,
                       width: size.width * 0.455,
+                      decoration: BoxDecoration(
+                        borderRadius: const BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.red.shade600,
+                            Colors.redAccent,
+                            Colors.red.shade200,
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
                       child: Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
+                              children: const [
+                                Text(
                                   'Total Unpaid',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Container(
-                                  margin: const EdgeInsets.only(left: 5),
-                                  decoration: BoxDecoration(
-                                    color: Colors.red.withOpacity(0.2),
-                                    borderRadius: BorderRadius.circular(5),
-                                  ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(5.0),
-                                    child: Text(
-                                      '-25%',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.red,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
                                   ),
                                 ),
                               ],
@@ -214,13 +203,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               'Belum Terbayar',
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey,
+                                color: Colors.black54,
                               ),
                             ),
                             const Spacer(),
-                            const Text(
-                              'Rp. 25.000.000',
-                              style: TextStyle(
+                            Text(
+                              formatCurrency.format(data.overallData.unpaid),
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -248,63 +237,66 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     children: [
                       Row(
-                        children: [
-                          const Icon(
+                        children: const [
+                          Icon(
                             Icons.monetization_on,
                             color: Color(
                               0xFF9B6DFF,
                             ),
                           ),
-                          const SizedBox(
+                          SizedBox(
                             width: 10,
                           ),
-                          const Text(
+                          Text(
                             'Invoice Paid',
                             style: TextStyle(
                               fontSize: 18,
                               color: Color(0xFF9B6DFF),
                             ),
                           ),
-                          const Spacer(),
+                          Spacer(),
                           Card(
                             elevation: 2,
-                            shape: const RoundedRectangleBorder(
+                            shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.all(
                                 Radius.circular(10),
                               ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8,
-                                right: 5,
-                              ),
-                              child: DropdownButtonHideUnderline(
-                                child: DropdownButton(
-                                  value: value.isEmpty ? dropItems[0] : value,
-                                  icon: const Icon(
-                                    Icons.keyboard_arrow_down_sharp,
-                                    color: Color(0xFF9B6DFF),
-                                  ),
-                                  items: dropItems.map((String items) {
-                                    return DropdownMenuItem(
-                                      value: items,
-                                      child: Text(
-                                        items,
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                    );
-                                  }).toList(),
-                                  onChanged: (String? newValue) {
-                                    if (newValue != null) {
-                                      setState(() {
-                                        value = newValue;
-                                      });
-                                    }
-                                  },
+                              padding: EdgeInsets.all(12),
+                              child: Text(
+                                'Monthly',
+                                style: TextStyle(
+                                  fontSize: 15,
                                 ),
                               ),
+                              // child: DropdownButtonHideUnderline(
+                              //   child: DropdownButton(
+                              //     value: value.isEmpty ? dropItems[0] : value,
+                              //     icon: const Icon(
+                              //       Icons.keyboard_arrow_down_sharp,
+                              //       color: Color(0xFF9B6DFF),
+                              //     ),
+                              //     items: dropItems.map((String items) {
+                              //       return DropdownMenuItem(
+                              //         value: items,
+                              //         child: Text(
+                              //           items,
+                              //           style: const TextStyle(
+                              //             fontSize: 15,
+                              //           ),
+                              //         ),
+                              //       );
+                              //     }).toList(),
+                              //     onChanged: (String? newValue) {
+                              //       if (newValue != null) {
+                              //         setState(() {
+                              //           value = newValue;
+                              //         });
+                              //       }
+                              //     },
+                              //   ),
+                              // ),
                             ),
                           ),
                         ],
@@ -312,111 +304,71 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       const SizedBox(
                         height: 25,
                       ),
-                      SizedBox(
-                        width: double.infinity,
-                        height: 250,
-                        child: BarChart(
-                          BarChartData(
-                            alignment: BarChartAlignment.center,
-                            gridData: FlGridData(show: false),
-                            backgroundColor: Colors.white,
-                            borderData: FlBorderData(show: false),
-                            titlesData: FlTitlesData(
-                              bottomTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: true,
-                                  getTitlesWidget: (data, meta) {
-                                    const style = TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.bold,
-                                    );
-                                    Widget text;
-                                    switch (data.toInt()) {
-                                      case 0:
-                                        text = const Text('JAN', style: style);
-                                        break;
-                                      case 1:
-                                        text = const Text(
-                                          'FEB',
-                                          style: style,
-                                        );
-                                        break;
-                                      case 2:
-                                        text = const Text(
-                                          'MAR',
-                                          style: style,
-                                        );
-                                        break;
-                                      case 3:
-                                        text = const Text(
-                                          'APR',
-                                          style: style,
-                                        );
-                                        break;
-                                      case 4:
-                                        text = const Text(
-                                          'MAY',
-                                          style: style,
-                                        );
-                                        break;
-                                      case 5:
-                                        text = const Text(
-                                          'JUN',
-                                          style: style,
-                                        );
-                                        break;
-                                      default:
-                                        text = const Text(
-                                          '',
-                                          style: style,
-                                        );
-                                        break;
-                                    }
-                                    return SideTitleWidget(
-                                      axisSide: meta.axisSide,
-                                      space: 4,
-                                      child: text,
-                                    );
-                                  },
+                      SingleChildScrollView(
+                        physics: const BouncingScrollPhysics(),
+                        scrollDirection: Axis.horizontal,
+                        child: SizedBox(
+                          width: MediaQuery.of(context).orientation ==
+                                  Orientation.landscape
+                              ? size.width * 1
+                              : size.width * 1.4,
+                          height: 250,
+                          child: BarChart(
+                            BarChartData(
+                              alignment: BarChartAlignment.spaceBetween,
+                              gridData: FlGridData(show: false),
+                              backgroundColor: Colors.white,
+                              borderData: FlBorderData(show: false),
+                              titlesData: FlTitlesData(
+                                bottomTitles: AxisTitles(
+                                  sideTitles: _bottomTittles(),
                                 ),
-                              ),
-                              topTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: false,
-                                ),
-                              ),
-                              leftTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: false,
-                                ),
-                              ),
-                              rightTitles: AxisTitles(
-                                sideTitles: SideTitles(
-                                  showTitles: false,
-                                ),
-                              ),
-                            ),
-                            groupsSpace: 20,
-                            barGroups: dataChart
-                                .map(
-                                  (dataItem) => BarChartGroupData(
-                                    x: dataItem.x,
-                                    barRods: [
-                                      BarChartRodData(
-                                        toY: dataItem.y1,
-                                        width: 16,
-                                        color: const Color(0xFF9B6DFF),
-                                      ),
-                                      BarChartRodData(
-                                        toY: dataItem.y2,
-                                        width: 16,
-                                        color: const Color(0xFF9B6DFF)
-                                            .withOpacity(0.2),
-                                      ),
-                                    ],
+                                topTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: false,
                                   ),
-                                )
-                                .toList(),
+                                ),
+                                leftTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: false,
+                                  ),
+                                ),
+                                rightTitles: AxisTitles(
+                                  sideTitles: SideTitles(
+                                    showTitles: false,
+                                  ),
+                                ),
+                              ),
+                              groupsSpace: 10,
+                              barGroups: data.listChart
+                                  .map(
+                                    (dataItem) => BarChartGroupData(
+                                      x: dataItem.x,
+                                      barRods: [
+                                        BarChartRodData(
+                                          toY: dataItem.y1,
+                                          width: MediaQuery.of(context)
+                                                      .orientation ==
+                                                  Orientation.landscape
+                                              ? 24
+                                              : 16,
+                                          color: const Color(0xFF9B6DFF),
+                                        ),
+                                        BarChartRodData(
+                                          toY: dataItem.y2,
+                                          width: MediaQuery.of(context)
+                                                      .orientation ==
+                                                  Orientation.landscape
+                                              ? 24
+                                              : 16,
+                                          color: const Color(0xFF9B6DFF)
+                                              .withOpacity(0.2),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                  .toList(),
+                            ),
                           ),
                         ),
                       ),
@@ -454,8 +406,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       const SizedBox(
                         height: 25,
                       ),
+                      if (data.listInvoiceActivities.isEmpty)
+                        Container(
+                          alignment: Alignment.center,
+                          margin: const EdgeInsets.only(
+                            top: 40,
+                            bottom: 65,
+                          ),
+                          child: const Text(
+                            'Activities masih kosong',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
                       Column(
-                        children: dataInvoices.map((i) {
+                        children: data.listInvoiceActivities.map((i) {
                           return ListTile(
                             leading: Container(
                               decoration: BoxDecoration(
@@ -472,7 +439,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                             ),
                             title: Text(
-                              i.namaClient,
+                              i.namaclient!,
                               style: const TextStyle(
                                 fontSize: 15,
                                 color: Colors.black,
@@ -480,7 +447,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                             ),
                             subtitle: Text(
-                              i.tanggalInvoices,
+                              i.tanggalinvoices!,
                               style: const TextStyle(
                                 fontSize: 13,
                                 color: Colors.black,
@@ -491,7 +458,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Text(
-                                  i.totalInvoices,
+                                  i.totalinvoices!,
                                   style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.black,
@@ -499,7 +466,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ),
                                 ),
                                 Text(
-                                  i.statusPembayaran,
+                                  i.statuspembayaran!,
                                   style: const TextStyle(
                                     fontSize: 13,
                                     color: Colors.black,
@@ -518,6 +485,102 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ),
         ),
       ),
+    );
+  }
+
+  SideTitles _bottomTittles() {
+    return SideTitles(
+      showTitles: true,
+      getTitlesWidget: (data, meta) {
+        const style = TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.bold,
+        );
+        Widget text;
+        switch (data.toInt()) {
+          case 0:
+            text = const Text('JAN', style: style);
+            break;
+          case 1:
+            text = const Text(
+              'FEB',
+              style: style,
+            );
+            break;
+          case 2:
+            text = const Text(
+              'MAR',
+              style: style,
+            );
+            break;
+          case 3:
+            text = const Text(
+              'APR',
+              style: style,
+            );
+            break;
+          case 4:
+            text = const Text(
+              'MAY',
+              style: style,
+            );
+            break;
+          case 5:
+            text = const Text(
+              'JUN',
+              style: style,
+            );
+            break;
+          case 6:
+            text = const Text(
+              'JUL',
+              style: style,
+            );
+            break;
+          case 7:
+            text = const Text(
+              'AUG',
+              style: style,
+            );
+            break;
+          case 8:
+            text = const Text(
+              'SEP',
+              style: style,
+            );
+            break;
+
+          case 9:
+            text = const Text(
+              'OCT',
+              style: style,
+            );
+            break;
+          case 10:
+            text = const Text(
+              'NOV',
+              style: style,
+            );
+            break;
+          case 11:
+            text = const Text(
+              'DES',
+              style: style,
+            );
+            break;
+          default:
+            text = const Text(
+              '',
+              style: style,
+            );
+            break;
+        }
+        return SideTitleWidget(
+          axisSide: meta.axisSide,
+          space: 8,
+          child: text,
+        );
+      },
     );
   }
 }
