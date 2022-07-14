@@ -26,7 +26,7 @@ class ApiClient {
     dio.interceptors.add(LogInterceptor(responseBody: true, requestBody: true));
   }
 
-  Future<LoginModel> login(String email, String password) async {
+  Future<UserModel> login(String email, String password) async {
     try {
       Response response = await dio.post(
         '/sessions',
@@ -35,8 +35,7 @@ class ApiClient {
           'password': password,
         },
       );
-
-      return LoginModel.fromJson(response.data);
+      return UserModel.fromJson(response.data['data']);
     } on DioError catch (e) {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
@@ -159,10 +158,8 @@ class ApiClient {
       dio.options.headers["Authorization"] = 'Bearer $token';
       Response response = await dio.get('/clients');
       List<dynamic> listClient = response.data['data'];
-      print(listClient);
       List<ClientModel> listData =
           listClient.map((client) => ClientModel.fromJson(client)).toList();
-      print(listData);
       return listData;
     } on DioError catch (e) {
       if (e.type == DioErrorType.connectTimeout) {
@@ -253,10 +250,10 @@ class ApiClient {
       responseData.forEach((key, value) {
         listClient.add(value);
       });
-      print(listClient);
+
       List<Payment> listData =
           listClient.map((client) => Payment.fromJson(client)).toList();
-      print(listData.map((e) => e.paid));
+
       return listData;
     } on DioError catch (e) {
       if (e.type == DioErrorType.connectTimeout) {
@@ -279,6 +276,27 @@ class ApiClient {
       var overall = response.data['data'];
 
       return OverallModel.fromJson(overall);
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout) {
+        throw Exception('Connection Timeout to Server');
+      }
+      if (e.response?.statusCode == 422) {
+        throw Exception('Gagal Memuat Data');
+      }
+      if (e.response?.statusCode == 401) {
+        throw Exception('Token Expired');
+      }
+      throw Exception(e.message);
+    }
+  }
+
+  Future<UserModel> getDataUser(String token) async {
+    try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
+      Response response = await dio.get('/users');
+      var user = response.data['data'];
+
+      return UserModel.fromJson(user);
     } on DioError catch (e) {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');

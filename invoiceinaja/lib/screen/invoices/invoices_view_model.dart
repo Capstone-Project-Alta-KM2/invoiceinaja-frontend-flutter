@@ -25,8 +25,6 @@ class InvoicesViewModel with ChangeNotifier {
   List<List<InvoiceModel>> _listAllInvoices = [];
   List<List<InvoiceModel>> get listAllInvoice =>
       List.unmodifiable(_listAllInvoices);
-  // InvoiceModel _dataId = InvoiceModel();
-  // InvoiceModel get dataId => _dataId;
   final List<String> _dataTitle = [
     'All',
     'Paid',
@@ -48,7 +46,6 @@ class InvoicesViewModel with ChangeNotifier {
     try {
       String? token = prefs.getString('token');
       await ApiClient().deleteInvoice(index, token!);
-      getData();
       notifyListeners();
       changeState(InvoiceViewState.none);
     } catch (e) {
@@ -85,13 +82,6 @@ class InvoicesViewModel with ChangeNotifier {
 //   }
 
   Future getData() async {
-    _listAllInvoices = [
-      [],
-      [],
-      [],
-      [],
-      [],
-    ];
     changeState(InvoiceViewState.loading);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
@@ -138,15 +128,6 @@ class InvoicesViewModel with ChangeNotifier {
     } catch (e) {
       changeState(InvoiceViewState.error);
     }
-
-    // List<String>? listKontak = sharedPrefs.getStringList('contact');
-    // if (listKontak != null) {
-    //   _contactModels = [
-    //     ...listKontak
-    //         .map((contact) => ContactsModel.fromMap(jsonDecode(contact)))
-    //         .toList()
-    //   ];
-    // }
   }
 
   void addItems(DetailInvoice detailInvoice) {

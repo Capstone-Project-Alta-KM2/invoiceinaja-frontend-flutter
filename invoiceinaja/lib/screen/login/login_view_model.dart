@@ -27,11 +27,15 @@ class LoginViewModel with ChangeNotifier {
 
     try {
       await ApiClient().login(email, password).then((value) {
-        if (value.data != null) {
-          prefs.setString('email', value.data!.email.toString());
-          prefs.setString('avatar', value.data!.avatar.toString());
-          prefs.setString('token', value.data!.token.toString());
-        }
+        prefs.setString('id', value.id.toString());
+        prefs.setString('nama', value.fullname.toString());
+        prefs.setString('company', value.company.toString());
+        prefs.setString('phone', value.phoneNumber.toString());
+        prefs.setString('email', value.email.toString());
+        prefs.setString('avatar', value.avatar.toString());
+        prefs.setString('password', value.password.toString());
+        prefs.setString('token', value.token.toString());
+
         return value;
       });
 

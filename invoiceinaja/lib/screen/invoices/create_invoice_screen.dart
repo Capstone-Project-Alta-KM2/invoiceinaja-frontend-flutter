@@ -214,7 +214,7 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                                       Text(
                                         selectedDate == null
                                             ? 'dd/mm/yyyy'
-                                            : DateFormat('dd-MM-yyyy')
+                                            : DateFormat('yyyy-MM-dd')
                                                 .format(selectedDate!),
                                         style: TextStyle(
                                           color: selectedDate == null
@@ -261,7 +261,7 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                                       Text(
                                         selectedDueDate == null
                                             ? 'dd/mm/yyyy'
-                                            : DateFormat('dd-MM-yyyy')
+                                            : DateFormat('yyyy-MM-dd')
                                                 .format(selectedDueDate!),
                                         style: TextStyle(
                                           color: selectedDueDate == null
@@ -474,9 +474,9 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                               nama: _namaController.text,
                               email: _emailController.text,
                               alamat: _addressController.text,
-                              invoiceDate: DateFormat('dd-MM-yyyy')
+                              invoiceDate: DateFormat('yyyy-MM-dd')
                                   .format(selectedDate!),
-                              invoiceDueDate: DateFormat('dd-MM-yyyy')
+                              invoiceDueDate: DateFormat('yyyy-MM-dd')
                                   .format(selectedDueDate!),
                               listDetailInvoice: data.listItems,
                             ),

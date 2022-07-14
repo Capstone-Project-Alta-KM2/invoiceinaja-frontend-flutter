@@ -1,33 +1,44 @@
 class UserModel {
-  String? namaLengkap;
+  int? id;
+  String? fullname;
   String? email;
-  String? namaBisnis;
-  String? noTlp;
-  String? kataSandi;
+  String? phoneNumber;
+  String? company;
+  String? password;
+  String? avatar;
+  String? token;
 
-  UserModel({
-    this.namaLengkap,
-    this.email,
-    this.noTlp,
-    this.namaBisnis,
-    this.kataSandi,
-  });
+  UserModel(
+      {this.id,
+      this.fullname,
+      this.email,
+      this.phoneNumber,
+      this.company,
+      this.password,
+      this.avatar,
+      this.token});
 
   UserModel.fromJson(Map<String, dynamic> json) {
-    namaLengkap = json['fullname'];
+    id = json['id'];
+    fullname = json['fullname'];
     email = json['email'];
-    noTlp = json['phone_number'];
-    namaBisnis = json['company'];
-    kataSandi = json['password'];
+    phoneNumber = json['phone_number'];
+    company = json['company'];
+    password = json['password'];
+    avatar = json['avatar'];
+    token = json['token'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['fullname'] = namaLengkap;
+    data['id'] = id;
+    data['fullname'] = fullname;
     data['email'] = email;
-    data['phone_number'] = noTlp;
-    data['company'] = namaBisnis;
-    data['password'] = kataSandi;
+    data['phone_number'] = phoneNumber;
+    data['company'] = company;
+    data['password'] = password;
+    data['avatar'] = avatar;
+    data['token'] = token;
     return data;
   }
 }

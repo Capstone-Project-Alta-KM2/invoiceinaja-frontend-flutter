@@ -425,11 +425,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             final form = _formKey.currentState!;
                             if (form.validate()) {
                               final dataRegister = UserModel(
-                                namaLengkap: _namaController.text,
-                                namaBisnis: _namaPerusahaanController.text,
+                                fullname: _namaController.text,
+                                company: _namaPerusahaanController.text,
                                 email: _emailController.text,
-                                noTlp: _noTeleponController.text,
-                                kataSandi: _passwordController.text,
+                                phoneNumber: _noTeleponController.text,
+                                password: _passwordController.text,
                               );
                               data.register(dataRegister).then(
                                 (value) {

@@ -61,14 +61,14 @@ class DashBoardsViewModel with ChangeNotifier {
       String? token = prefs.getString('token');
       final dataApi = await ApiClient().getDataGraphic(token!);
       _listGraphic = dataApi;
-      _listChart = List.generate(
-        _listGraphic.length,
-        (index) => ChartModel(
+      _listChart = List.generate(_listGraphic.length, (index) {
+        final data = _listGraphic[index];
+        return ChartModel(
           x: index,
-          y1: _listGraphic[index].paid!.toDouble(),
-          y2: _listGraphic[index].unpaid!.toDouble(),
-        ),
-      );
+          y1: data.paid!.toDouble(),
+          y2: data.unpaid!.toDouble(),
+        );
+      });
       notifyListeners();
       changeState(DashBoardViewState.none);
     } catch (e) {
@@ -76,7 +76,6 @@ class DashBoardsViewModel with ChangeNotifier {
         changeState(DashBoardViewState.tokenExpired);
       } else {
         changeState(DashBoardViewState.error);
-        print(e);
       }
     }
   }

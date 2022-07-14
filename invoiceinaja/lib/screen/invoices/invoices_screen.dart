@@ -454,7 +454,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                     bottom: 5),
                                                 child: Text(
                                                   DateFormat.yMMMMd().format(
-                                                      DateFormat('dd-MM-yyyy')
+                                                      DateFormat('yyyy-MM-dd')
                                                           .parse(i.postDue!)),
                                                   style: const TextStyle(
                                                     fontSize: 13,
@@ -605,7 +605,10 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                                       (value) =>
                                                                           Navigator.pop(
                                                                               context),
-                                                                    );
+                                                                    )
+                                                                    .then((_) =>
+                                                                        value
+                                                                            .getData());
                                                               },
                                                               child: Column(
                                                                 mainAxisSize:

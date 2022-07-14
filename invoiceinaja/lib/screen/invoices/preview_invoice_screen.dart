@@ -256,55 +256,64 @@ class PreviewInvoice extends StatelessWidget {
                   },
                   itemCount: listDetailInvoice.length,
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 30, bottom: 10),
-                  width: double.infinity,
-                  height: 45,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: const Color(0xFF9B6DFF),
-                      textStyle: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                    ),
-                    onPressed: () {
-                      final int totalAmount = listDetailInvoice
-                          .map((e) => e.price! * e.quantity!)
-                          .fold(
-                              0,
-                              (previousValue, element) =>
-                                  previousValue + element);
-                      data
-                          .addInvoice(
-                            PostInvoice(
-                              invoice: Invoice(
-                                clientId: id,
-                                invoiceDate: invoiceDate,
-                                invoiceDue: invoiceDate,
-                                totalAmount: totalAmount,
-                              ),
-                              detailInvoice: listDetailInvoice,
-                            ),
-                          )
-                          .then(
-                            (value) => Navigator.pushAndRemoveUntil(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const HomepageScreen(),
-                              ),
-                              (Route<dynamic> route) => false,
-                            ),
-                          );
-                    },
-                    child: const Text(
-                      'Send Invoice',
+                if (data.state == InvoiceViewState.loading)
+                  Container(
+                    margin: const EdgeInsets.only(top: 30),
+                    alignment: Alignment.center,
+                    child: const CircularProgressIndicator(
+                      color: Colors.purple,
                     ),
                   ),
-                ),
+                if (data.state != InvoiceViewState.loading)
+                  Container(
+                    margin: const EdgeInsets.only(top: 30, bottom: 10),
+                    width: double.infinity,
+                    height: 45,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: const Color(0xFF9B6DFF),
+                        textStyle: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                      ),
+                      onPressed: () {
+                        final int totalAmount = listDetailInvoice
+                            .map((e) => e.price! * e.quantity!)
+                            .fold(
+                                0,
+                                (previousValue, element) =>
+                                    previousValue + element);
+                        data
+                            .addInvoice(
+                              PostInvoice(
+                                invoice: Invoice(
+                                  clientId: id,
+                                  invoiceDate: invoiceDate,
+                                  invoiceDue: invoiceDueDate,
+                                  totalAmount: totalAmount,
+                                ),
+                                detailInvoice: listDetailInvoice,
+                              ),
+                            )
+                            .then(
+                              (value) => Navigator.pushAndRemoveUntil(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const HomepageScreen(),
+                                ),
+                                (Route<dynamic> route) => false,
+                              ),
+                            );
+                      },
+                      child: const Text(
+                        'Send Invoice',
+                      ),
+                    ),
+                  ),
               ],
             ),
           ],
