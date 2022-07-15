@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:invoiceinaja/screen/edit_profile/edit_profile_screen.dart';
+import 'package:invoiceinaja/screen/settings/edit_profile_screen.dart';
 import 'package:invoiceinaja/screen/login/login_screen.dart';
-import 'package:invoiceinaja/screen/reset_password/reset_password_screen.dart';
+import 'package:invoiceinaja/screen/settings/reset_password_screen.dart';
 import 'package:invoiceinaja/screen/settings/settings_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -153,12 +153,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 24),
                   child: ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: const Color(0xFF9B6DFF),
+                    leading: const CircleAvatar(
+                      backgroundColor: Color(0xFF9B6DFF),
                       foregroundColor: Colors.white,
                       maxRadius: 30,
-                      backgroundImage:
-                          NetworkImage(value.userData.avatar ?? ''),
+                      backgroundImage: NetworkImage(
+                          'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=871&q=80'),
                     ),
                     title: Text(
                       value.userData.fullname ?? '',
@@ -168,9 +168,18 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     trailing: GestureDetector(
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const EditProfile()));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => EditProfile(
+                              nama: value.userData.fullname ?? '',
+                              email: value.userData.email ?? '',
+                              phone: value.userData.phoneNumber ?? '',
+                              company: value.userData.company ?? '',
+                            ),
+                          ),
+                        ).then(
+                          (_) => value.getDataUser(),
+                        );
                       },
                       child: const Icon(Icons.edit, color: Colors.black),
                     ),

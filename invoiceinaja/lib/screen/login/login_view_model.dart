@@ -33,7 +33,6 @@ class LoginViewModel with ChangeNotifier {
         prefs.setString('phone', value.phoneNumber.toString());
         prefs.setString('email', value.email.toString());
         prefs.setString('avatar', value.avatar.toString());
-        prefs.setString('password', value.password.toString());
         prefs.setString('token', value.token.toString());
 
         return value;
@@ -50,8 +49,6 @@ class LoginViewModel with ChangeNotifier {
       } else {
         changeState(LoginViewState.error);
       }
-
-      print(e);
     }
   }
 }

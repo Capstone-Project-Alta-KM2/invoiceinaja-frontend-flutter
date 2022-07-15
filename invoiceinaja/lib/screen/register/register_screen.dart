@@ -432,7 +432,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 password: _passwordController.text,
                               );
                               data.register(dataRegister).then(
-                                (value) {
+                                (_) {
                                   if (data.state == RegisterViewState.none) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

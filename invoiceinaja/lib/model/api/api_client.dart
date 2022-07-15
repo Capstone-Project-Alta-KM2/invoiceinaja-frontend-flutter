@@ -40,7 +40,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Login Gagal');
       }
       throw Exception(e.message);
@@ -58,8 +58,50 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Register Gagal');
+      }
+      throw Exception(e.message);
+    }
+  }
+
+  Future<Response> updateUser(UserModel user, String token) async {
+    try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
+      final response = await dio.put(
+        '/users',
+        data: jsonEncode(user.toJson()),
+      );
+      return response;
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout) {
+        throw Exception('Connection Timeout to Server');
+      }
+      if (e.response?.statusCode == 400) {
+        throw Exception('Update User Gagal');
+      }
+      throw Exception(e.message);
+    }
+  }
+
+  Future<Response> changePassword(
+      String oldPassword, String newPassword, String token) async {
+    try {
+      dio.options.headers["Authorization"] = 'Bearer $token';
+      Response response = await dio.post(
+        '/change_passwords',
+        data: {
+          'old_password': oldPassword,
+          'new_password': newPassword,
+        },
+      );
+      return response;
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout) {
+        throw Exception('Connection Timeout to Server');
+      }
+      if (e.response?.statusCode == 400) {
+        throw Exception('Ganti Password Gagal');
       }
       throw Exception(e.message);
     }
@@ -77,7 +119,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Gagal Memuat Data');
       }
       if (e.response?.statusCode == 401) {
@@ -99,7 +141,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Add data invoice failed');
       }
       if (e.response?.statusCode == 401) {
@@ -143,7 +185,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Delete Invoice failed');
       }
       if (e.response?.statusCode == 401) {
@@ -165,7 +207,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Gagal Memuat Data');
       }
       if (e.response?.statusCode == 401) {
@@ -187,7 +229,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Add data invoice failed');
       }
       if (e.response?.statusCode == 401) {
@@ -210,7 +252,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Update data client failed');
       }
       if (e.response?.statusCode == 401) {
@@ -231,7 +273,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Delete client failed');
       }
       if (e.response?.statusCode == 401) {
@@ -259,7 +301,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Gagal Memuat Data');
       }
       if (e.response?.statusCode == 401) {
@@ -280,7 +322,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Gagal Memuat Data');
       }
       if (e.response?.statusCode == 401) {
@@ -301,7 +343,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Gagal Memuat Data');
       }
       if (e.response?.statusCode == 401) {
@@ -323,7 +365,7 @@ class ApiClient {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
       }
-      if (e.response?.statusCode == 422) {
+      if (e.response?.statusCode == 400) {
         throw Exception('Gagal Memuat Data');
       }
       if (e.response?.statusCode == 401) {

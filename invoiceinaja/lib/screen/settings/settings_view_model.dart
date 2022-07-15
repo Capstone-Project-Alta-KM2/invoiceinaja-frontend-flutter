@@ -11,6 +11,7 @@ enum SettingViewState {
   serverTimeout,
   error,
   tokenExpired,
+  failed,
 }
 
 class SettingViewModel with ChangeNotifier {
@@ -47,9 +48,6 @@ class SettingViewModel with ChangeNotifier {
         password: password,
         token: token,
       );
-      print(nama);
-      print(token);
-      print(avatar);
       _userData = dataApi;
 
       notifyListeners();
@@ -60,7 +58,51 @@ class SettingViewModel with ChangeNotifier {
       } else {
         changeState(SettingViewState.error);
       }
-      print(e);
+    }
+  }
+
+  Future updateUser(UserModel user) async {
+    changeState(SettingViewState.loading);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      String? token = prefs.getString('token');
+      await ApiClient().updateUser(user, token!);
+      prefs.setString('nama', user.fullname.toString());
+      prefs.setString('company', user.company.toString());
+      prefs.setString('phone', user.phoneNumber.toString());
+      prefs.setString('email', user.email.toString());
+      changeState(SettingViewState.none);
+    } catch (e) {
+      if (e.toString().contains('No Connection in Your Phone')) {
+        changeState(SettingViewState.noConnection);
+      } else if (e.toString().contains('Connection Timeout to Server')) {
+        changeState(SettingViewState.serverTimeout);
+      } else if (e.toString().contains('Update Gagal')) {
+        changeState(SettingViewState.failed);
+      } else {
+        changeState(SettingViewState.error);
+      }
+    }
+  }
+
+  Future changePassword(String oldPassword, String newPassword) async {
+    changeState(SettingViewState.loading);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    try {
+      String? token = prefs.getString('token');
+      await ApiClient().changePassword(oldPassword, newPassword, token!);
+      changeState(SettingViewState.none);
+    } catch (e) {
+      if (e.toString().contains('No Connection in Your Phone')) {
+        changeState(SettingViewState.noConnection);
+      } else if (e.toString().contains('Connection Timeout to Server')) {
+        changeState(SettingViewState.serverTimeout);
+      } else if (e.toString().contains('Ganti Password Gagal')) {
+        changeState(SettingViewState.failed);
+      } else {
+        changeState(SettingViewState.error);
+      }
     }
   }
 

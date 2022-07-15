@@ -16,22 +16,13 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
-  final List<ChartModel> dataChart = List.generate(
-    12,
-    (index) => ChartModel(
-      x: index,
-      y1: Random().nextInt(20) + Random().nextDouble(),
-      y2: Random().nextInt(20) + Random().nextDouble(),
-    ),
-  );
-
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var viewModel = Provider.of<DashBoardsViewModel>(context, listen: false);
-      await viewModel.getDataOverall();
       await viewModel.getDataGraphic();
+      await viewModel.getDataOverall();
     });
   }
 
@@ -96,7 +87,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 );
               }
-              if (value.state == DashBoardViewState.error) {
+              if (value.state != DashBoardViewState.none &&
+                  value.state != DashBoardViewState.loading) {
                 return Center(
                   child: GestureDetector(
                     onTap: () {
@@ -461,6 +453,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                           x: dataItem.x,
                                           barRods: [
                                             BarChartRodData(
+                                              fromY: 0,
                                               toY: dataItem.y1,
                                               width: MediaQuery.of(context)
                                                           .orientation ==
@@ -470,6 +463,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                               color: const Color(0xFF9B6DFF),
                                             ),
                                             BarChartRodData(
+                                              fromY: 0,
                                               toY: dataItem.y2,
                                               width: MediaQuery.of(context)
                                                           .orientation ==

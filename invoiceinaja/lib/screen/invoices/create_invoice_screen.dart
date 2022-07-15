@@ -92,18 +92,14 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                       ),
                       Autocomplete<ClientModel>(
                         optionsBuilder: (TextEditingValue value) {
-                          if (value.text.isEmpty) {
-                            return List.empty();
-                          } else {
-                            return data.listClients
-                                .where(
-                                  (element) =>
-                                      element.fullname!.toLowerCase().contains(
-                                            value.text.toLowerCase(),
-                                          ),
-                                )
-                                .toList();
-                          }
+                          return data.listClients
+                              .where(
+                                (element) =>
+                                    element.fullname!.toLowerCase().contains(
+                                          value.text.toLowerCase(),
+                                        ),
+                              )
+                              .toList();
                         },
                         displayStringForOption: (ClientModel client) =>
                             '${client.fullname}',
@@ -145,6 +141,7 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                         margin: const EdgeInsets.only(top: 12),
                         child: TextFormField(
                           controller: _emailController,
+                          enabled: false,
                           decoration: InputDecoration(
                             hintText: 'Email',
                             border: OutlineInputBorder(
@@ -162,6 +159,7 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                       Container(
                         margin: const EdgeInsets.only(top: 12),
                         child: TextFormField(
+                          enabled: false,
                           controller: _addressController,
                           decoration: InputDecoration(
                             hintText: 'Address',
@@ -181,6 +179,7 @@ class _CreateInvoiceState extends State<CreateInvoice> {
                         margin: const EdgeInsets.only(top: 12),
                         child: TextFormField(
                           controller: _companyController,
+                          enabled: false,
                           decoration: InputDecoration(
                             hintText: 'Company',
                             border: OutlineInputBorder(

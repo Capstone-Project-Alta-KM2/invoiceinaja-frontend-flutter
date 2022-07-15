@@ -35,6 +35,116 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
       backgroundColor: Colors.white,
       body: Consumer<InvoicesViewModel>(
         builder: (context, value, child) {
+          if (value.state == InvoiceViewState.loading) {
+            return Container(
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator(
+                color: Colors.purple,
+              ),
+            );
+          }
+          if (value.state != InvoiceViewState.none &&
+              value.state != InvoiceViewState.loading) {
+            return Center(
+              child: GestureDetector(
+                onTap: () {
+                  value.getData().then(
+                    (data) {
+                      if (value.state == InvoiceViewState.error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            duration: const Duration(seconds: 3),
+                            content: Container(
+                              width: double.infinity,
+                              height: 30,
+                              alignment: Alignment.center,
+                              child: const Text(
+                                  "Unable fetch data from server, please check your connection or try again later"),
+                            ),
+                            backgroundColor: Theme.of(context).errorColor,
+                          ),
+                        );
+                      }
+                      if (value.state == InvoiceViewState.tokenExpired) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              title: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.red,
+                                    width: 5,
+                                  ),
+                                ),
+                                child: const Icon(
+                                  Icons.clear_sharp,
+                                  color: Colors.red,
+                                  size: 80,
+                                ),
+                              ),
+                              content: const Text(
+                                'Your session has expired, please login again',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginScreen(),
+                                    ),
+                                    (Route<dynamic> route) => false,
+                                  ),
+                                  child: const Text(
+                                    'Login Again',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                  );
+                },
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.purple,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 7,
+                        blurRadius: 10, // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                    size: 60,
+                  ),
+                ),
+              ),
+            );
+          }
           return SafeArea(
             child: Column(
               children: [
@@ -350,6 +460,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                       return RefreshIndicator(
                         onRefresh: () => value.getData(),
                         child: CustomScrollView(
+                          physics: const BouncingScrollPhysics(),
                           slivers: [
                             if (dataList.isEmpty)
                               SliverFillRemaining(

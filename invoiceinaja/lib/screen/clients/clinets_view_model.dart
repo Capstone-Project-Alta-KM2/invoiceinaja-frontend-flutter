@@ -18,8 +18,6 @@ class ClientsViewModel with ChangeNotifier {
   ClientViewState get state => _state;
   var _listClients = <ClientModel>[];
   List<ClientModel> get listClient => List.unmodifiable(_listClients);
-  // InvoiceModel _dataId = InvoiceModel();
-  // InvoiceModel get dataId => _dataId;
 
   changeState(ClientViewState s) {
     _state = s;
@@ -45,7 +43,7 @@ class ClientsViewModel with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String? token = prefs.getString('token');
-      await ApiClient().addClient(client, token!).then((value) => print(value));
+      await ApiClient().addClient(client, token!);
       notifyListeners();
       changeState(ClientViewState.none);
     } catch (e) {
@@ -82,15 +80,6 @@ class ClientsViewModel with ChangeNotifier {
         changeState(ClientViewState.error);
       }
     }
-
-    // List<String>? listKontak = sharedPrefs.getStringList('contact');
-    // if (listKontak != null) {
-    //   _contactModels = [
-    //     ...listKontak
-    //         .map((contact) => ContactsModel.fromMap(jsonDecode(contact)))
-    //         .toList()
-    //   ];
-    // }
   }
 
   Future logout() async {
@@ -106,23 +95,4 @@ class ClientsViewModel with ChangeNotifier {
       changeState(ClientViewState.error);
     }
   }
-  // getDataId(String id) async {
-  //   changeState(InvoiceViewState.loading);
-
-  //   try {
-  //     final dataContact = await ApiClient().getDataContactsID(id);
-  //     _dataId = dataContact;
-  //     notifyListeners();
-  //     changeState(InvoiceViewState.none);
-  //   } catch (e) {
-  //     changeState(InvoiceViewState.error);
-  //   }
-  // }
-
-  // saveDatatoPreferences() {
-  //   List<String> data =
-  //       _listInvoices.map((contact) => jsonEncode(contact.toMap())).toList();
-  //   sharedPrefs.setStringList('contact', data);
-  //   notifyListeners();
-  // }
 }

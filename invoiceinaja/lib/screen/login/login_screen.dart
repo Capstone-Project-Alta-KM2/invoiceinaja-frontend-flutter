@@ -113,6 +113,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             keyboardType: TextInputType.emailAddress,
                             cursorColor: Colors.black,
                             controller: _emailController,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (email) {
                               if (email == null || email.isEmpty) {
                                 return 'Email cannot be empty';
@@ -166,6 +168,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             obscureText: _obscurepasswordLogin,
                             cursorColor: Colors.black,
                             controller: _passwordController,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             onChanged: (password) {
                               if (password.isEmpty) {
                                 setState(() {

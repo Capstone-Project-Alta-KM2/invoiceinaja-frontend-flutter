@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:invoiceinaja/model/client_model.dart';
 import 'package:provider/provider.dart';
 
 import '../login/login_screen.dart';
@@ -14,12 +15,16 @@ class ClientsScreen extends StatefulWidget {
 }
 
 class _ClientsScreenState extends State<ClientsScreen> {
+  List<ClientModel> listDataClient = [];
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var viewModel = Provider.of<ClientsViewModel>(context, listen: false);
-      await viewModel.getData();
+      await viewModel
+          .getData()
+          .then((value) => listDataClient = viewModel.listClient);
     });
   }
 
@@ -30,248 +35,164 @@ class _ClientsScreenState extends State<ClientsScreen> {
       backgroundColor: Colors.white,
       body: Consumer<ClientsViewModel>(
         builder: (context, value, child) {
-          var listData = value.listClient;
-          return SafeArea(
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 25,
-                ),
-                const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Material(
-                    elevation: 5,
-                    shadowColor: Color(0xFF9B6DFF),
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(15),
-                    ),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        fillColor: Colors.white,
-                        hintText: 'Pencarian untuk semua clients',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
+          var listData = listDataClient;
+          if (value.state == ClientViewState.loading) {
+            return Container(
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator(
+                color: Colors.purple,
+              ),
+            );
+          }
+          if (value.state != ClientViewState.none &&
+              value.state != ClientViewState.loading) {
+            return Center(
+              child: GestureDetector(
+                onTap: () {
+                  value.getData().then(
+                    (data) {
+                      if (value.state == ClientViewState.error) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            duration: const Duration(seconds: 3),
+                            content: Container(
+                              width: double.infinity,
+                              height: 30,
+                              alignment: Alignment.center,
+                              child: const Text(
+                                  "Unable fetch data from server, please check your connection or try again later"),
+                            ),
+                            backgroundColor: Theme.of(context).errorColor,
                           ),
-                        ),
-                        prefixIcon: Icon(
-                          Icons.search,
-                          color: Colors.black,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                if (value.state == ClientViewState.loading)
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.center,
-                      child: const CircularProgressIndicator(
-                        color: Colors.purple,
-                      ),
-                    ),
-                  ),
-                if (value.state == ClientViewState.error)
-                  Expanded(
-                    child: Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          value.getData().then(
-                            (data) {
-                              if (value.state == ClientViewState.error) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    behavior: SnackBarBehavior.floating,
-                                    duration: const Duration(seconds: 3),
-                                    content: Container(
-                                      width: double.infinity,
-                                      height: 30,
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                          "Unable fetch data from server, please check your connection or try again later"),
-                                    ),
-                                    backgroundColor:
-                                        Theme.of(context).errorColor,
+                        );
+                      }
+                      if (value.state == ClientViewState.tokenExpired) {
+                        showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              title: Container(
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                  border: Border.all(
+                                    color: Colors.red,
+                                    width: 5,
                                   ),
-                                );
-                              }
-                              if (value.state == ClientViewState.tokenExpired) {
-                                showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        title: Container(
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.white,
-                                            border: Border.all(
-                                              color: Colors.red,
-                                              width: 5,
-                                            ),
-                                          ),
-                                          child: const Icon(
-                                            Icons.clear_sharp,
-                                            color: Colors.red,
-                                            size: 80,
-                                          ),
-                                        ),
-                                        content: const Text(
-                                          'Your session has expired, please login again',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () =>
-                                                Navigator.pushAndRemoveUntil(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (context) =>
-                                                    const LoginScreen(),
-                                              ),
-                                              (Route<dynamic> route) => false,
-                                            ),
-                                            child: const Text(
-                                              'Login Again',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              }
-                            },
-                          );
-                        },
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.purple,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 7,
-                                blurRadius: 10, // changes position of shadow
+                                ),
+                                child: const Icon(
+                                  Icons.clear_sharp,
+                                  color: Colors.red,
+                                  size: 80,
+                                ),
                               ),
-                            ],
+                              content: const Text(
+                                'Your session has expired, please login again',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const LoginScreen(),
+                                    ),
+                                    (Route<dynamic> route) => false,
+                                  ),
+                                  child: const Text(
+                                    'Login Again',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    },
+                  );
+                },
+                child: Container(
+                  width: 80,
+                  height: 80,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.purple,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 7,
+                        blurRadius: 10, // changes position of shadow
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.refresh,
+                    color: Colors.white,
+                    size: 60,
+                  ),
+                ),
+              ),
+            );
+          } else {
+            return SafeArea(
+              child: Column(
+                children: [
+                  const SizedBox(
+                    height: 25,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Material(
+                      elevation: 5,
+                      shadowColor: const Color(0xFF9B6DFF),
+                      color: Colors.white,
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(15),
+                      ),
+                      child: TextField(
+                        onChanged: (data) {
+                          setState(() {
+                            listDataClient = value.listClient.where((element) {
+                              return (element.fullname!
+                                      .toLowerCase()
+                                      .contains(data.toLowerCase()) ||
+                                  element.email!
+                                      .toLowerCase()
+                                      .contains(data.toLowerCase()) ||
+                                  element.company!
+                                      .toLowerCase()
+                                      .contains(data.toLowerCase()));
+                            }).toList();
+                          });
+                        },
+                        decoration: const InputDecoration(
+                          fillColor: Colors.white,
+                          hintText: 'Pencarian untuk semua clients',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(15),
+                            ),
                           ),
-                          child: const Icon(
-                            Icons.refresh,
-                            color: Colors.white,
-                            size: 60,
+                          prefixIcon: Icon(
+                            Icons.search,
+                            color: Colors.black,
                           ),
                         ),
                       ),
                     ),
                   ),
-                if (value.state == ClientViewState.tokenExpired)
-                  Expanded(
-                    child: Center(
-                      child: GestureDetector(
-                        onTap: () {
-                          value.getData().then(
-                            (data) {
-                              if (value.state == ClientViewState.tokenExpired) {
-                                showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20),
-                                        ),
-                                        title: Container(
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            color: Colors.white,
-                                            border: Border.all(
-                                              color: Colors.red,
-                                              width: 5,
-                                            ),
-                                          ),
-                                          child: const Icon(
-                                            Icons.clear_sharp,
-                                            color: Colors.red,
-                                            size: 80,
-                                          ),
-                                        ),
-                                        content: const Text(
-                                          'Your session has expired, please login again',
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(
-                                            fontSize: 18,
-                                          ),
-                                        ),
-                                        actions: [
-                                          TextButton(
-                                            onPressed: () {
-                                              value.logout().then(
-                                                (_) {
-                                                  Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const LoginScreen(),
-                                                    ),
-                                                    (Route<dynamic> route) =>
-                                                        false,
-                                                  );
-                                                },
-                                              );
-                                            },
-                                            child: const Text(
-                                              'Login Again',
-                                              style: TextStyle(
-                                                color: Colors.red,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              }
-                            },
-                          );
-                        },
-                        child: Container(
-                          width: 80,
-                          height: 80,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.purple,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 7,
-                                blurRadius: 10, // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: const Icon(
-                            Icons.refresh,
-                            color: Colors.white,
-                            size: 60,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                if (value.state == ClientViewState.none)
                   Expanded(
                     child: RefreshIndicator(
                       onRefresh: () => value.getData(),
@@ -583,9 +504,10 @@ class _ClientsScreenState extends State<ClientsScreen> {
                       ),
                     ),
                   ),
-              ],
-            ),
-          );
+                ],
+              ),
+            );
+          }
         },
       ),
       floatingActionButton: FloatingActionButton(
@@ -594,10 +516,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
             ? null
             : () {
                 Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const AddClients()))
-                    .then((value) => data.getData());
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AddClients())).then(
+                    (value) => data
+                        .getData()
+                        .then((value) => listDataClient = data.listClient));
               },
         backgroundColor: const Color(0xFF9B6DFF),
         child: const Icon(
