@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:invoiceinaja/model/onboarding_model.dart';
-import 'package:invoiceinaja/screen/login/login_screen.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import '../../model/onboarding_model.dart';
+import '../login/login_screen.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({Key? key}) : super(key: key);
@@ -90,6 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   return Center(
                     child: ListView(
                       shrinkWrap: true,
+                      physics: const BouncingScrollPhysics(),
                       children: [
                         Column(
                           mainAxisAlignment: MainAxisAlignment.center,

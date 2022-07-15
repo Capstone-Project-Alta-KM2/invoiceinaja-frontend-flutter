@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:invoiceinaja/screen/login/login_screen.dart';
+
+import '../login/login_screen.dart';
 
 class NewPassword extends StatefulWidget {
   const NewPassword({Key? key}) : super(key: key);

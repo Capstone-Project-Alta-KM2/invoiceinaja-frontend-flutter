@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:invoiceinaja/screen/new_password/new_password_screen.dart';
+
+import '../new_password/new_password_screen.dart';
 
 class ForgotPasswordEmail extends StatefulWidget {
   const ForgotPasswordEmail({Key? key}) : super(key: key);
@@ -80,11 +81,11 @@ class _ForgotPasswordEmailState extends State<ForgotPasswordEmail> {
                   Container(
                     margin: const EdgeInsets.only(top: 25),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
                         SizedBox(
-                          width: 64,
-                          height: 68,
+                          width: 70,
+                          height: 75,
                           child: TextFormField(
                             keyboardType: TextInputType.number,
                             textInputAction: TextInputAction.next,
@@ -130,8 +131,8 @@ class _ForgotPasswordEmailState extends State<ForgotPasswordEmail> {
                           ),
                         ),
                         SizedBox(
-                          width: 64,
-                          height: 68,
+                          width: 70,
+                          height: 75,
                           child: TextFormField(
                             keyboardType: TextInputType.number,
                             cursorColor: Colors.black,
@@ -176,8 +177,8 @@ class _ForgotPasswordEmailState extends State<ForgotPasswordEmail> {
                           ),
                         ),
                         SizedBox(
-                          width: 64,
-                          height: 68,
+                          width: 70,
+                          height: 75,
                           child: TextFormField(
                             keyboardType: TextInputType.number,
                             cursorColor: Colors.black,
@@ -222,8 +223,8 @@ class _ForgotPasswordEmailState extends State<ForgotPasswordEmail> {
                           ),
                         ),
                         SizedBox(
-                          width: 64,
-                          height: 68,
+                          width: 70,
+                          height: 75,
                           child: TextFormField(
                             keyboardType: TextInputType.number,
                             cursorColor: Colors.black,
