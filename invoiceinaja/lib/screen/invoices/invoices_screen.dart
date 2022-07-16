@@ -35,14 +35,6 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
       backgroundColor: Colors.white,
       body: Consumer<InvoicesViewModel>(
         builder: (context, value, child) {
-          if (value.state == InvoiceViewState.loading) {
-            return Container(
-              alignment: Alignment.center,
-              child: const CircularProgressIndicator(
-                color: Colors.purple,
-              ),
-            );
-          }
           if (value.state != InvoiceViewState.none &&
               value.state != InvoiceViewState.loading) {
             return Center(
@@ -232,6 +224,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                 Expanded(
                   child: PageView.builder(
                     controller: _controller,
+                    physics: const BouncingScrollPhysics(),
                     itemCount: value.listAllInvoice.length,
                     onPageChanged: (int index) {
                       setState(() {
@@ -460,7 +453,9 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                       return RefreshIndicator(
                         onRefresh: () => value.getData(),
                         child: CustomScrollView(
-                          physics: const BouncingScrollPhysics(),
+                          physics: const AlwaysScrollableScrollPhysics(
+                            parent: BouncingScrollPhysics(),
+                          ),
                           slivers: [
                             if (dataList.isEmpty)
                               SliverFillRemaining(
@@ -502,13 +497,13 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                   ),
                                 ),
                               ),
-                            SliverFillRemaining(
-                              hasScrollBody: false,
-                              child: Column(
-                                children: dataList.map((i) {
+                            SliverList(
+                              delegate: SliverChildBuilderDelegate(
+                                (context, index) {
                                   final formatCurrency =
                                       NumberFormat.simpleCurrency(
                                           locale: 'id_ID');
+                                  final listDataIndex = dataList[index];
                                   return Container(
                                     margin: const EdgeInsets.all(10.0),
                                     child: Card(
@@ -548,7 +543,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                             margin: const EdgeInsets.only(
                                                 bottom: 5),
                                             child: Text(
-                                              i.client!,
+                                              listDataIndex.client!,
                                               style: const TextStyle(
                                                 fontSize: 15,
                                                 color: Colors.black,
@@ -566,7 +561,8 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                 child: Text(
                                                   DateFormat.yMMMMd().format(
                                                       DateFormat('yyyy-MM-dd')
-                                                          .parse(i.postDue!)),
+                                                          .parse(listDataIndex
+                                                              .postDue!)),
                                                   style: const TextStyle(
                                                     fontSize: 13,
                                                     color: Colors.black,
@@ -574,7 +570,8 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                 ),
                                               ),
                                               Text(
-                                                formatCurrency.format(i.amount),
+                                                formatCurrency.format(
+                                                    listDataIndex.amount),
                                                 style: const TextStyle(
                                                   fontSize: 15,
                                                   color: Colors.black,
@@ -620,19 +617,23 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                                     builder:
                                                                         (context) =>
                                                                             DetailInvoiceScreen(
-                                                                      id: i.id!,
-                                                                      nama: i
+                                                                      id: listDataIndex
+                                                                          .id!,
+                                                                      nama: listDataIndex
                                                                           .client!,
                                                                       invoiceDate:
-                                                                          i.date!,
+                                                                          listDataIndex
+                                                                              .date!,
                                                                       invoiceDueDate:
-                                                                          i.postDue!,
-                                                                      amount: i
+                                                                          listDataIndex
+                                                                              .postDue!,
+                                                                      amount: listDataIndex
                                                                           .amount!,
-                                                                      status: i
+                                                                      status: listDataIndex
                                                                           .status!,
                                                                       listItems:
-                                                                          i.items!,
+                                                                          listDataIndex
+                                                                              .items!,
                                                                     ),
                                                                   ),
                                                                 )
@@ -711,7 +712,8 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                               onTap: () {
                                                                 data
                                                                     .deleteInvoice(
-                                                                        i.id!)
+                                                                        listDataIndex
+                                                                            .id!)
                                                                     .then(
                                                                       (value) =>
                                                                           Navigator.pop(
@@ -794,8 +796,10 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                   size: 25,
                                                 ),
                                               ),
-                                              if (i.status == 'Paid' ||
-                                                  i.status == 'PAID')
+                                              if (listDataIndex.status ==
+                                                      'Paid' ||
+                                                  listDataIndex.status ==
+                                                      'PAID')
                                                 Expanded(
                                                   child: Container(
                                                     decoration: BoxDecoration(
@@ -812,7 +816,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                         bottom: 5,
                                                       ),
                                                       child: Text(
-                                                        i.status!,
+                                                        listDataIndex.status!,
                                                         style: const TextStyle(
                                                           fontSize: 13,
                                                           color:
@@ -822,8 +826,10 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                              if (i.status == 'Unpaid' ||
-                                                  i.status == 'UNPAID')
+                                              if (listDataIndex.status ==
+                                                      'Unpaid' ||
+                                                  listDataIndex.status ==
+                                                      'UNPAID')
                                                 Expanded(
                                                   child: Container(
                                                     decoration: BoxDecoration(
@@ -840,7 +846,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                         bottom: 5,
                                                       ),
                                                       child: Text(
-                                                        i.status!,
+                                                        listDataIndex.status!,
                                                         style: const TextStyle(
                                                           fontSize: 13,
                                                           color:
@@ -850,8 +856,10 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                     ),
                                                   ),
                                                 ),
-                                              if (i.status == 'Overdue' ||
-                                                  i.status == 'OVERDUE')
+                                              if (listDataIndex.status ==
+                                                      'Overdue' ||
+                                                  listDataIndex.status ==
+                                                      'OVERDUE')
                                                 Expanded(
                                                   child: Container(
                                                     decoration: BoxDecoration(
@@ -868,7 +876,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                         bottom: 5,
                                                       ),
                                                       child: Text(
-                                                        i.status!,
+                                                        listDataIndex.status!,
                                                         style: const TextStyle(
                                                           fontSize: 13,
                                                           color:
@@ -884,7 +892,8 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                       ),
                                     ),
                                   );
-                                }).toList(),
+                                },
+                                childCount: dataList.length,
                               ),
                             ),
                           ],

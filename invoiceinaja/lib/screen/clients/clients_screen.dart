@@ -197,7 +197,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
                     child: RefreshIndicator(
                       onRefresh: () => value.getData(),
                       child: CustomScrollView(
-                        physics: const BouncingScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(
+                          parent: BouncingScrollPhysics(),
+                        ),
                         slivers: [
                           if (listData.isEmpty)
                             SliverFillRemaining(

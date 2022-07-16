@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:invoiceinaja/model/api/api_client.dart';
-import 'package:invoiceinaja/model/invoices_model.dart';
 import 'package:invoiceinaja/model/overall_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/chart_model.dart';
 import '../../model/graphics_model.dart';
+import '../../model/invoice_model.dart';
 
 enum DashBoardViewState {
   none,
@@ -27,8 +27,8 @@ class DashBoardsViewModel with ChangeNotifier {
   List<Payment> get listGraphic => List.unmodifiable(_listGraphic);
   var _listChart = <ChartModel>[];
   List<ChartModel> get listChart => List.unmodifiable(_listChart);
-  var _listInvoiceActivities = <InvoicesModel>[];
-  List<InvoicesModel> get listInvoiceActivities =>
+  var _listInvoiceActivities = <InvoiceModel>[];
+  List<InvoiceModel> get listInvoiceActivities =>
       List.unmodifiable(_listInvoiceActivities);
 
   changeState(DashBoardViewState s) {
@@ -85,7 +85,7 @@ class DashBoardsViewModel with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String? token = prefs.getString('token');
-      final dataApi = await ApiClient().getDataInvoiceActivities(token!);
+      final dataApi = await ApiClient().getDataInvoice(token!);
       _listInvoiceActivities = dataApi;
       notifyListeners();
       changeState(DashBoardViewState.none);

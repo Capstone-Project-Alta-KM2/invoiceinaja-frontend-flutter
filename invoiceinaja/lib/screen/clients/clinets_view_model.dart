@@ -13,7 +13,7 @@ enum ClientViewState {
   tokenExpired,
 }
 
-class ClientsViewModel with ChangeNotifier {
+class ClientsViewModel extends ChangeNotifier {
   ClientViewState _state = ClientViewState.none;
   ClientViewState get state => _state;
   var _listClients = <ClientModel>[];

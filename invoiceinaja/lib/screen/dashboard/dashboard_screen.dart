@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:invoiceinaja/screen/dashboard/dashboard_view_model.dart';
 import 'package:provider/provider.dart';
-import '../../model/chart_model.dart';
 import '../login/login_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -22,6 +21,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var viewModel = Provider.of<DashBoardsViewModel>(context, listen: false);
       await viewModel.getDataGraphic();
+      await viewModel.getDataActivities();
       await viewModel.getDataOverall();
     });
   }
@@ -549,7 +549,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ),
                                 ),
                                 title: Text(
-                                  i.namaclient!,
+                                  i.client!,
                                   style: const TextStyle(
                                     fontSize: 15,
                                     color: Colors.black,
@@ -557,7 +557,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   ),
                                 ),
                                 subtitle: Text(
-                                  i.tanggalinvoices!,
+                                  i.postDue!,
                                   style: const TextStyle(
                                     fontSize: 13,
                                     color: Colors.black,
@@ -568,7 +568,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      i.totalinvoices!,
+                                      formatCurrency.format(i.amount),
                                       style: const TextStyle(
                                         fontSize: 15,
                                         color: Colors.black,
@@ -576,7 +576,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       ),
                                     ),
                                     Text(
-                                      i.statuspembayaran!,
+                                      i.status!,
                                       style: const TextStyle(
                                         fontSize: 13,
                                         color: Colors.black,

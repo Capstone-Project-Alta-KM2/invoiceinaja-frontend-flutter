@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "486884852152",
+    "project_id": "invoiceinaja-4b9e0",
+    "storage_bucket": "invoiceinaja-4b9e0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:486884852152:android:5ef6dab8a9e060224c4f4d",
+        "android_client_info": {
+          "package_name": "com.example.invoiceinaja"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "486884852152-lu56bporfmblnn5h1omkmaaa1mdbavs9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAdTKC5GoaN1ZrB4MCmx5g3a6iOyOVnTtw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "486884852152-lu56bporfmblnn5h1omkmaaa1mdbavs9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

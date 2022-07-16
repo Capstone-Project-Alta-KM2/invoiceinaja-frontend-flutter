@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:invoiceinaja/model/login_model.dart';
 import 'package:invoiceinaja/model/overall_model.dart';
 import 'package:invoiceinaja/model/post_invoice_model.dart';
 import 'package:invoiceinaja/model/user_model.dart';
@@ -9,7 +8,6 @@ import 'package:invoiceinaja/model/user_model.dart';
 import '../client_model.dart';
 import '../graphics_model.dart';
 import '../invoice_model.dart';
-import '../invoices_model.dart';
 
 class ApiClient {
   var dio = Dio();
@@ -345,51 +343,6 @@ class ApiClient {
       }
       if (e.response?.statusCode == 400) {
         throw Exception('Gagal Memuat Data');
-      }
-      if (e.response?.statusCode == 401) {
-        throw Exception('Token Expired');
-      }
-      throw Exception(e.message);
-    }
-  }
-
-  Future<List<InvoicesModel>> getDataInvoiceActivities(String token) async {
-    try {
-      dio.options.headers["Authorization"] = 'Bearer $token';
-      Response response = await dio.get('/clients');
-      List<dynamic> listClient = response.data['data'];
-      List<InvoicesModel> listData =
-          listClient.map((client) => InvoicesModel.fromJson(client)).toList();
-      return listData;
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout) {
-        throw Exception('Connection Timeout to Server');
-      }
-      if (e.response?.statusCode == 400) {
-        throw Exception('Gagal Memuat Data');
-      }
-      if (e.response?.statusCode == 401) {
-        throw Exception('Token Expired');
-      }
-      throw Exception(e.message);
-    }
-  }
-
-  Future<Response> addInvoicesActivities(
-      InvoicesModel activities, String token) async {
-    try {
-      dio.options.headers["Authorization"] = 'Bearer $token';
-      final response = await dio.post(
-        '/clients',
-        data: jsonEncode(activities.toJson()),
-      );
-      return response;
-    } on DioError catch (e) {
-      if (e.type == DioErrorType.connectTimeout) {
-        throw Exception('Connection Timeout to Server');
-      }
-      if (e.response?.statusCode == 422) {
-        throw Exception('Add data invoice failed');
       }
       if (e.response?.statusCode == 401) {
         throw Exception('Token Expired');
