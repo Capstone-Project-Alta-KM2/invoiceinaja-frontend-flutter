@@ -4,6 +4,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:invoiceinaja/screen/dashboard/dashboard_view_model.dart';
+import 'package:invoiceinaja/screen/dashboard/notification_screen.dart';
 import 'package:provider/provider.dart';
 import '../login/login_screen.dart';
 
@@ -65,7 +66,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const NotificationScreen()));
+            },
             icon: const Icon(
               Icons.notifications_outlined,
               color: Colors.black,
