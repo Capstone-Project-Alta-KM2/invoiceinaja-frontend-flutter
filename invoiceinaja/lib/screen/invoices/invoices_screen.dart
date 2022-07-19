@@ -4,6 +4,7 @@ import 'package:invoiceinaja/screen/invoices/create_invoice_screen.dart';
 import 'package:invoiceinaja/screen/invoices/detail_invoice_screen.dart';
 import 'package:provider/provider.dart';
 
+import '../../model/invoice_model.dart';
 import '../login/login_screen.dart';
 import 'invoices_view_model.dart';
 
@@ -16,20 +17,30 @@ class InvoicesScreen extends StatefulWidget {
 
 class _InvoicesScreenState extends State<InvoicesScreen> {
   final _controller = PageController();
+  final _searchController = TextEditingController();
+
   int _currentPage = 0;
+  List<List<InvoiceModel>> listAllDataInvoice = [];
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var viewModel = Provider.of<InvoicesViewModel>(context, listen: false);
-      await viewModel.getData();
+      await viewModel.getData().then((_) {
+        listAllDataInvoice = List.from(viewModel.listAllInvoice);
+      });
     });
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    _searchController.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     final data = Provider.of<InvoicesViewModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
@@ -147,15 +158,37 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                   padding: const EdgeInsets.all(10.0),
                   child: Column(
                     children: [
-                      const Material(
+                      Material(
                         elevation: 5,
-                        shadowColor: Color(0xFF9B6DFF),
+                        shadowColor: const Color(0xFF9B6DFF),
                         color: Colors.white,
-                        borderRadius: BorderRadius.all(
+                        borderRadius: const BorderRadius.all(
                           Radius.circular(15),
                         ),
                         child: TextField(
-                          decoration: InputDecoration(
+                          controller: _searchController,
+                          onChanged: (dataSearch) {
+                            setState(() {
+                              listAllDataInvoice[_currentPage] = value
+                                  .listAllInvoice[_currentPage]
+                                  .where((element) {
+                                return (element.client!
+                                        .toLowerCase()
+                                        .contains(dataSearch.toLowerCase()) ||
+                                    element.amount!
+                                        .toString()
+                                        .toLowerCase()
+                                        .contains(dataSearch) ||
+                                    element.date!
+                                        .toLowerCase()
+                                        .contains(dataSearch.toLowerCase()) ||
+                                    element.postDue!
+                                        .toLowerCase()
+                                        .contains(dataSearch.toLowerCase()));
+                              }).toList();
+                            });
+                          },
+                          decoration: const InputDecoration(
                             fillColor: Colors.white,
                             hintText: 'Pencarian untuk semua invoice',
                             border: OutlineInputBorder(
@@ -225,14 +258,16 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                   child: PageView.builder(
                     controller: _controller,
                     physics: const BouncingScrollPhysics(),
-                    itemCount: value.listAllInvoice.length,
+                    itemCount: listAllDataInvoice.length,
                     onPageChanged: (int index) {
                       setState(() {
                         _currentPage = index;
+                        _searchController.clear();
+                        listAllDataInvoice = List.from(value.listAllInvoice);
                       });
                     },
                     itemBuilder: (context, index) {
-                      var dataList = value.listAllInvoice[index];
+                      var dataList = listAllDataInvoice[index];
                       if (value.state == InvoiceViewState.loading) {
                         return Container(
                           alignment: Alignment.center,
