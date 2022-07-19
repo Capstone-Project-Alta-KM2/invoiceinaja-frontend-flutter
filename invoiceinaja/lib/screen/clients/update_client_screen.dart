@@ -67,7 +67,7 @@ class _UpdateClientsState extends State<UpdateClients> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text('Buat Client'),
+        title: const Text('Update Client'),
         centerTitle: true,
         // iconTheme: IconThemeData(color: Colors.black),
         leading: IconButton(

@@ -65,7 +65,7 @@ class ClientsViewModel extends ChangeNotifier {
   }
 
   Future getData() async {
-    changeState(ClientViewState.loading);
+    // changeState(ClientViewState.loading);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String? token = prefs.getString('token');

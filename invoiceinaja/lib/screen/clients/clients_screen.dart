@@ -16,16 +16,32 @@ class ClientsScreen extends StatefulWidget {
 
 class _ClientsScreenState extends State<ClientsScreen> {
   List<ClientModel> listDataClient = [];
+  bool isLoading = true;
+  bool isSearching = false;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var viewModel = Provider.of<ClientsViewModel>(context, listen: false);
+      setState(() {
+        isLoading = true;
+      });
       await viewModel
           .getData()
-          .then((value) => listDataClient = viewModel.listClient);
+          .then((value) => listDataClient = viewModel.listClient)
+          .then((_) => isLoading = false);
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    var viewModel = Provider.of<ClientsViewModel>(context);
+    if (!isSearching) {
+      viewModel.getData().then((_) => listDataClient = viewModel.listClient);
+    }
+
+    super.didChangeDependencies();
   }
 
   @override
@@ -50,6 +66,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 ),
                 child: TextField(
                   onChanged: (dataSearch) {
+                    if (dataSearch.isEmpty) {
+                      isSearching = false;
+                    }
+                    if (dataSearch.isNotEmpty) {
+                      isSearching = true;
+                    }
                     setState(() {
                       listDataClient = data.listClient.where((element) {
                         return (element.fullname!
@@ -84,7 +106,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
               child: Consumer<ClientsViewModel>(
                 builder: (context, value, child) {
                   var listData = listDataClient;
-                  if (value.state == ClientViewState.loading) {
+                  if (isLoading) {
                     return Container(
                       alignment: Alignment.center,
                       child: const CircularProgressIndicator(
@@ -198,7 +220,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
                     );
                   } else {
                     return RefreshIndicator(
-                      onRefresh: () => value.getData(),
+                      onRefresh: () {
+                        setState(() {
+                          isLoading = true;
+                        });
+                        return value.getData().then((_) => isLoading = false);
+                      },
                       child: CustomScrollView(
                         physics: const AlwaysScrollableScrollPhysics(
                           parent: BouncingScrollPhysics(),
@@ -341,12 +368,12 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                                                 ),
                                                               )
                                                                   .then(
-                                                                    (value) =>
-                                                                        Navigator.pop(
+                                                                    (_) => Navigator
+                                                                        .pop(
                                                                             context),
                                                                   )
                                                                   .then(
-                                                                    (value) => data
+                                                                    (_) => data
                                                                         .getData(),
                                                                   );
                                                             },
@@ -415,9 +442,15 @@ class _ClientsScreenState extends State<ClientsScreen> {
                                                                       dataIndex
                                                                           .id!)
                                                                   .then(
-                                                                    (value) =>
-                                                                        Navigator.pop(
-                                                                            context),
+                                                                    (_) => value
+                                                                        .getData()
+                                                                        .then((_) =>
+                                                                            listDataClient =
+                                                                                value.listClient)
+                                                                        .then(
+                                                                          (_) =>
+                                                                              Navigator.pop(context),
+                                                                        ),
                                                                   );
                                                             },
                                                             child: Column(
@@ -523,10 +556,7 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const AddClients())).then(
-                    (value) => data
-                        .getData()
-                        .then((value) => listDataClient = data.listClient));
+                        builder: (context) => const AddClients()));
               },
         backgroundColor: const Color(0xFF9B6DFF),
         child: const Icon(

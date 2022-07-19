@@ -197,407 +197,384 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                 );
               }
-              return ListView(
-                physics: const BouncingScrollPhysics(),
-                children: [
-                  const SizedBox(
-                    height: 15,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Card(
-                        elevation: 8,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        color: Colors.white,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.green,
-                                Colors.greenAccent,
-                                Colors.green.shade400,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                          height: 110,
-                          width: size.width * 0.455,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: const [
-                                    Text(
-                                      'Total Paid',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Text(
-                                  'Terbayar',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  formatCurrency.format(data.overallData.paid),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      Card(
-                        elevation: 8,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
-                          ),
-                        ),
-                        color: Colors.white,
-                        child: Container(
-                          height: 110,
-                          width: size.width * 0.455,
-                          decoration: BoxDecoration(
-                            borderRadius: const BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.red.shade600,
-                                Colors.red.shade200,
-                                Colors.redAccent,
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: const [
-                                    Text(
-                                      'Total Unpaid',
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const Text(
-                                  'Belum Terbayar',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.black54,
-                                  ),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  formatCurrency
-                                      .format(data.overallData.unpaid),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  Card(
-                    elevation: 8,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
+              return RefreshIndicator(
+                onRefresh: () => value.getDataGraphic(),
+                child: ListView(
+                  physics: const BouncingScrollPhysics(),
+                  children: [
+                    const SizedBox(
+                      height: 15,
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: const [
-                              Icon(
-                                Icons.monetization_on,
-                                color: Color(
-                                  0xFF9B6DFF,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 10,
-                              ),
-                              Text(
-                                'Invoice Paid',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  color: Color(0xFF9B6DFF),
-                                ),
-                              ),
-                              Spacer(),
-                              Card(
-                                elevation: 2,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(
-                                    Radius.circular(10),
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.all(12),
-                                  child: Text(
-                                    'Monthly',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                    ),
-                                  ),
-                                  // child: DropdownButtonHideUnderline(
-                                  //   child: DropdownButton(
-                                  //     value: value.isEmpty ? dropItems[0] : value,
-                                  //     icon: const Icon(
-                                  //       Icons.keyboard_arrow_down_sharp,
-                                  //       color: Color(0xFF9B6DFF),
-                                  //     ),
-                                  //     items: dropItems.map((String items) {
-                                  //       return DropdownMenuItem(
-                                  //         value: items,
-                                  //         child: Text(
-                                  //           items,
-                                  //           style: const TextStyle(
-                                  //             fontSize: 15,
-                                  //           ),
-                                  //         ),
-                                  //       );
-                                  //     }).toList(),
-                                  //     onChanged: (String? newValue) {
-                                  //       if (newValue != null) {
-                                  //         setState(() {
-                                  //           value = newValue;
-                                  //         });
-                                  //       }
-                                  //     },
-                                  //   ),
-                                  // ),
-                                ),
-                              ),
-                            ],
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Card(
+                          elevation: 8,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
                           ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            scrollDirection: Axis.horizontal,
-                            child: SizedBox(
-                              width: MediaQuery.of(context).orientation ==
-                                      Orientation.landscape
-                                  ? size.width * 1
-                                  : size.width * 1.4,
-                              height: 250,
-                              child: BarChart(
-                                BarChartData(
-                                  alignment: BarChartAlignment.spaceBetween,
-                                  gridData: FlGridData(show: false),
-                                  backgroundColor: Colors.white,
-                                  borderData: FlBorderData(show: false),
-                                  titlesData: FlTitlesData(
-                                    bottomTitles: AxisTitles(
-                                      sideTitles: _bottomTittles(),
-                                    ),
-                                    topTitles: AxisTitles(
-                                      sideTitles: SideTitles(
-                                        showTitles: false,
-                                      ),
-                                    ),
-                                    leftTitles: AxisTitles(
-                                      sideTitles: SideTitles(
-                                        showTitles: false,
-                                      ),
-                                    ),
-                                    rightTitles: AxisTitles(
-                                      sideTitles: SideTitles(
-                                        showTitles: false,
-                                      ),
-                                    ),
-                                  ),
-                                  groupsSpace: 5,
-                                  barGroups: data.listChart
-                                      .map(
-                                        (dataItem) => BarChartGroupData(
-                                          x: dataItem.x,
-                                          barRods: [
-                                            BarChartRodData(
-                                              fromY: 0,
-                                              toY: dataItem.y1,
-                                              width: MediaQuery.of(context)
-                                                          .orientation ==
-                                                      Orientation.landscape
-                                                  ? 24
-                                                  : 16,
-                                              color: const Color(0xFF9B6DFF),
-                                            ),
-                                            BarChartRodData(
-                                              fromY: 0,
-                                              toY: dataItem.y2,
-                                              width: MediaQuery.of(context)
-                                                          .orientation ==
-                                                      Orientation.landscape
-                                                  ? 24
-                                                  : 16,
-                                              color: const Color(0xFF9B6DFF)
-                                                  .withOpacity(0.2),
-                                            ),
-                                          ],
+                          color: Colors.white,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.green,
+                                  Colors.greenAccent,
+                                  Colors.green.shade400,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                            height: 110,
+                            width: size.width * 0.455,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: const [
+                                      Text(
+                                        'Total Paid',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
                                         ),
-                                      )
-                                      .toList(),
+                                      ),
+                                    ],
+                                  ),
+                                  const Text(
+                                    'Terbayar',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    formatCurrency
+                                        .format(data.overallData.paid),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        Card(
+                          elevation: 8,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          color: Colors.white,
+                          child: Container(
+                            height: 110,
+                            width: size.width * 0.455,
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(10),
+                              ),
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.red.shade600,
+                                  Colors.red.shade200,
+                                  Colors.redAccent,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: const [
+                                      Text(
+                                        'Total Unpaid',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const Text(
+                                    'Belum Terbayar',
+                                    style: TextStyle(
+                                      fontSize: 14,
+                                      color: Colors.black54,
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  Text(
+                                    formatCurrency
+                                        .format(data.overallData.unpaid),
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 25,
+                    ),
+                    Card(
+                      elevation: 8,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: const [
+                                Icon(
+                                  Icons.monetization_on,
+                                  color: Color(
+                                    0xFF9B6DFF,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  'Invoice Paid',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    color: Color(0xFF9B6DFF),
+                                  ),
+                                ),
+                                Spacer(),
+                                Card(
+                                  elevation: 2,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.all(
+                                      Radius.circular(10),
+                                    ),
+                                  ),
+                                  child: Padding(
+                                    padding: EdgeInsets.all(12),
+                                    child: Text(
+                                      'Monthly',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 25,
+                            ),
+                            SingleChildScrollView(
+                              physics: const BouncingScrollPhysics(),
+                              scrollDirection: Axis.horizontal,
+                              child: SizedBox(
+                                width: MediaQuery.of(context).orientation ==
+                                        Orientation.landscape
+                                    ? size.width * 1
+                                    : size.width * 1.4,
+                                height: 250,
+                                child: BarChart(
+                                  BarChartData(
+                                    alignment: BarChartAlignment.spaceBetween,
+                                    gridData: FlGridData(show: false),
+                                    backgroundColor: Colors.white,
+                                    borderData: FlBorderData(show: false),
+                                    titlesData: FlTitlesData(
+                                      bottomTitles: AxisTitles(
+                                        sideTitles: _bottomTittles(),
+                                      ),
+                                      topTitles: AxisTitles(
+                                        sideTitles: SideTitles(
+                                          showTitles: false,
+                                        ),
+                                      ),
+                                      leftTitles: AxisTitles(
+                                        sideTitles: SideTitles(
+                                          showTitles: false,
+                                        ),
+                                      ),
+                                      rightTitles: AxisTitles(
+                                        sideTitles: SideTitles(
+                                          showTitles: false,
+                                        ),
+                                      ),
+                                    ),
+                                    groupsSpace: 5,
+                                    barGroups: data.listChart
+                                        .map(
+                                          (dataItem) => BarChartGroupData(
+                                            x: dataItem.x,
+                                            barRods: [
+                                              BarChartRodData(
+                                                fromY: 0,
+                                                toY: dataItem.y1,
+                                                width: MediaQuery.of(context)
+                                                            .orientation ==
+                                                        Orientation.landscape
+                                                    ? 24
+                                                    : 16,
+                                                color: const Color(0xFF9B6DFF),
+                                              ),
+                                              BarChartRodData(
+                                                fromY: 0,
+                                                toY: dataItem.y2,
+                                                width: MediaQuery.of(context)
+                                                            .orientation ==
+                                                        Orientation.landscape
+                                                    ? 24
+                                                    : 16,
+                                                color: const Color(0xFF9B6DFF)
+                                                    .withOpacity(0.2),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                        .toList(),
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 25,
-                  ),
-                  Card(
-                    elevation: 8,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
-                      ),
+                    const SizedBox(
+                      height: 25,
                     ),
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'Invoices Activities',
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 25,
-                          ),
-                          if (data.listInvoiceActivities.isEmpty)
+                    Card(
+                      elevation: 8,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                      color: Colors.white,
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
                             Container(
                               alignment: Alignment.center,
-                              margin: const EdgeInsets.only(
-                                top: 40,
-                                bottom: 65,
-                              ),
                               child: const Text(
-                                'Activities masih kosong',
+                                'Invoices Activities',
                                 style: TextStyle(
-                                  fontSize: 16,
+                                  fontSize: 18,
+                                  color: Colors.black,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                          Column(
-                            children: data.listInvoiceActivities.map((i) {
-                              return ListTile(
-                                leading: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: const Color(0xFF9B6DFF)
-                                        .withOpacity(0.2),
-                                  ),
-                                  child: const Padding(
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Icon(
-                                      Icons.receipt_outlined,
-                                      color: Color(0xFF9B6DFF),
-                                      size: 25,
-                                    ),
-                                  ),
+                            const SizedBox(
+                              height: 25,
+                            ),
+                            if (data.listInvoiceActivities.isEmpty)
+                              Container(
+                                alignment: Alignment.center,
+                                margin: const EdgeInsets.only(
+                                  top: 40,
+                                  bottom: 65,
                                 ),
-                                title: Text(
-                                  i.client!,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    color: Colors.black,
+                                child: const Text(
+                                  'Activities masih kosong',
+                                  style: TextStyle(
+                                    fontSize: 16,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
-                                subtitle: Text(
-                                  i.postDue!,
-                                  style: const TextStyle(
-                                    fontSize: 13,
-                                    color: Colors.black,
+                              ),
+                            Column(
+                              children: data.listInvoiceActivities.map((i) {
+                                return ListTile(
+                                  leading: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: const Color(0xFF9B6DFF)
+                                          .withOpacity(0.2),
+                                    ),
+                                    child: const Padding(
+                                      padding: EdgeInsets.all(8.0),
+                                      child: Icon(
+                                        Icons.receipt_outlined,
+                                        color: Color(0xFF9B6DFF),
+                                        size: 25,
+                                      ),
+                                    ),
                                   ),
-                                ),
-                                trailing: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      formatCurrency.format(i.amount),
-                                      style: const TextStyle(
-                                        fontSize: 15,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                                  title: Text(
+                                    i.client!,
+                                    style: const TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
                                     ),
-                                    Text(
-                                      i.status!,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.black,
-                                      ),
+                                  ),
+                                  subtitle: Text(
+                                    i.postDue!,
+                                    style: const TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.black,
                                     ),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          )
-                        ],
+                                  ),
+                                  trailing: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        formatCurrency.format(i.amount),
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      Text(
+                                        i.status!,
+                                        style: const TextStyle(
+                                          fontSize: 13,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }).toList(),
+                            )
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               );
             },
           ),

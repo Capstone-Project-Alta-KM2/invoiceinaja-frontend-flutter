@@ -68,7 +68,7 @@ class InvoicesViewModel with ChangeNotifier {
   }
 
   Future getData() async {
-    changeState(InvoiceViewState.loading);
+    // changeState(InvoiceViewState.loading);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String? token = prefs.getString('token');
