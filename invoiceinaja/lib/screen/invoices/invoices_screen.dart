@@ -39,17 +39,6 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    var viewModel = Provider.of<InvoicesViewModel>(context);
-    if (!isSearching) {
-      viewModel.getData().then(
-          (_) => listAllDataInvoice = List.from(viewModel.listAllInvoice));
-    }
-
-    super.didChangeDependencies();
-  }
-
-  @override
   void dispose() {
     super.dispose();
     _searchController.dispose();
@@ -80,12 +69,6 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                     child: TextField(
                       controller: _searchController,
                       onChanged: (dataSearch) {
-                        if (dataSearch.isEmpty) {
-                          isSearching = false;
-                        }
-                        if (dataSearch.isNotEmpty) {
-                          isSearching = true;
-                        }
                         setState(() {
                           listAllDataInvoice[_currentPage] = data
                               .listAllInvoice[_currentPage]
@@ -174,7 +157,7 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
             ),
             Consumer<InvoicesViewModel>(
               builder: (context, value, child) {
-                if (isLoading) {
+                if (value.state == InvoiceViewState.loading) {
                   return Expanded(
                     child: Container(
                       alignment: Alignment.center,
@@ -412,7 +395,9 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                           });
                           return value
                               .getData()
-                              .then((value) => isLoading = false);
+                              .then((_) => dataList =
+                                  List.from(value.listAllInvoice[index]))
+                              .then((_) => isLoading = false);
                         },
                         child: CustomScrollView(
                           physics: const AlwaysScrollableScrollPhysics(
@@ -676,14 +661,21 @@ class _InvoicesScreenState extends State<InvoicesScreen> {
                                                                     .deleteInvoice(
                                                                         listDataIndex
                                                                             .id!)
-                                                                    .then(
-                                                                      (value) =>
-                                                                          Navigator.pop(
-                                                                              context),
-                                                                    )
                                                                     .then((_) =>
                                                                         value
-                                                                            .getData());
+                                                                            .getData())
+                                                                    .then(
+                                                                      (_) => dataList =
+                                                                          List.from(
+                                                                        value.listAllInvoice[
+                                                                            index],
+                                                                      ),
+                                                                    )
+                                                                    .then(
+                                                                      (_) => Navigator
+                                                                          .pop(
+                                                                              context),
+                                                                    );
                                                               },
                                                               child: Column(
                                                                 mainAxisSize:

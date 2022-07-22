@@ -300,7 +300,7 @@ class PreviewInvoice extends StatelessWidget {
                               ),
                             )
                             .then(
-                              (value) => Navigator.pushAndRemoveUntil(
+                              (_) => Navigator.pushAndRemoveUntil(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => const HomepageScreen(),

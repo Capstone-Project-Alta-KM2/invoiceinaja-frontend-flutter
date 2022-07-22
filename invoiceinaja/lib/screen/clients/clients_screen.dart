@@ -15,9 +15,7 @@ class ClientsScreen extends StatefulWidget {
 }
 
 class _ClientsScreenState extends State<ClientsScreen> {
-  List<ClientModel> listDataClient = [];
-  bool isLoading = true;
-  bool isSearching = false;
+  bool isLoading = false;
 
   @override
   void initState() {
@@ -29,19 +27,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
       });
       await viewModel
           .getData()
-          .then((value) => listDataClient = viewModel.listClient)
+          .then((_) => viewModel.listDataClientModel = viewModel.listClient)
           .then((_) => isLoading = false);
     });
-  }
-
-  @override
-  void didChangeDependencies() {
-    var viewModel = Provider.of<ClientsViewModel>(context);
-    if (!isSearching) {
-      viewModel.getData().then((_) => listDataClient = viewModel.listClient);
-    }
-
-    super.didChangeDependencies();
   }
 
   @override
@@ -66,14 +54,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
                 ),
                 child: TextField(
                   onChanged: (dataSearch) {
-                    if (dataSearch.isEmpty) {
-                      isSearching = false;
-                    }
-                    if (dataSearch.isNotEmpty) {
-                      isSearching = true;
-                    }
                     setState(() {
-                      listDataClient = data.listClient.where((element) {
+                      data.listDataClientModel =
+                          data.listClient.where((element) {
                         return (element.fullname!
                                 .toLowerCase()
                                 .contains(dataSearch.toLowerCase()) ||
@@ -105,8 +88,9 @@ class _ClientsScreenState extends State<ClientsScreen> {
             Expanded(
               child: Consumer<ClientsViewModel>(
                 builder: (context, value, child) {
-                  var listData = listDataClient;
-                  if (isLoading) {
+                  var listData = data.listDataClient;
+
+                  if (value.state == ClientViewState.loading) {
                     return Container(
                       alignment: Alignment.center,
                       child: const CircularProgressIndicator(
@@ -114,18 +98,17 @@ class _ClientsScreenState extends State<ClientsScreen> {
                       ),
                     );
                   }
-                  if (value.state != ClientViewState.none &&
-                      value.state != ClientViewState.loading) {
+                  if (value.state == ClientViewState.error) {
                     return Center(
                       child: GestureDetector(
                         onTap: () {
                           value.getData().then(
-                            (data) {
+                            (_) {
                               if (value.state == ClientViewState.error) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     behavior: SnackBarBehavior.floating,
-                                    duration: const Duration(seconds: 3),
+                                    duration: const Duration(seconds: 2),
                                     content: Container(
                                       width: double.infinity,
                                       height: 30,
@@ -218,330 +201,329 @@ class _ClientsScreenState extends State<ClientsScreen> {
                         ),
                       ),
                     );
-                  } else {
-                    return RefreshIndicator(
-                      onRefresh: () {
-                        setState(() {
-                          isLoading = true;
-                        });
-                        return value.getData().then((_) => isLoading = false);
-                      },
-                      child: CustomScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(
-                          parent: BouncingScrollPhysics(),
-                        ),
-                        slivers: [
-                          if (listData.isEmpty)
-                            SliverFillRemaining(
-                              hasScrollBody: false,
-                              child: Container(
-                                margin:
-                                    const EdgeInsets.only(top: 10, bottom: 10),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: 280,
-                                      height: 280,
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                          fit: BoxFit.contain,
-                                          image: AssetImage(
-                                            'assets/images/empty-clients.png',
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      margin: const EdgeInsets.only(top: 10),
-                                      padding: const EdgeInsets.only(
-                                          left: 20, right: 20),
-                                      child: const Text(
-                                        'Add your Partner to make it easier in making invoices',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          SliverList(
-                            delegate: SliverChildBuilderDelegate(
-                              (context, index) {
-                                var dataIndex = listData[index];
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 10),
-                                  child: Card(
-                                    elevation: 5,
-                                    shape: const RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(10))),
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 16, horizontal: 4),
-                                      child: ListTile(
-                                        leading: const Icon(Icons.people,
-                                            color: Color(0xFF9B6DFF)),
-                                        title: Padding(
-                                          padding:
-                                              const EdgeInsets.only(bottom: 4),
-                                          child: Text(
-                                            dataIndex.fullname!,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                        ),
-                                        subtitle: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.end,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              dataIndex.email!,
-                                              style: const TextStyle(
-                                                  color: Color(0xFF9B6DFF)),
-                                            ),
-                                          ],
-                                        ),
-                                        trailing: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                showModalBottomSheet(
-                                                  context: context,
-                                                  shape:
-                                                      const RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.only(
-                                                      topLeft:
-                                                          Radius.circular(25),
-                                                      topRight:
-                                                          Radius.circular(25),
-                                                    ),
-                                                  ),
-                                                  builder: (context) {
-                                                    return Container(
-                                                      margin:
-                                                          const EdgeInsets.all(
-                                                              20),
-                                                      child: Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceAround,
-                                                        children: [
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              Navigator.push(
-                                                                context,
-                                                                MaterialPageRoute(
-                                                                  builder:
-                                                                      (context) =>
-                                                                          UpdateClients(
-                                                                    id: dataIndex
-                                                                        .id!,
-                                                                    clientName:
-                                                                        dataIndex
-                                                                            .fullname!,
-                                                                    address:
-                                                                        dataIndex
-                                                                            .address!,
-                                                                    email: dataIndex
-                                                                        .email!,
-                                                                    city: dataIndex
-                                                                        .city!,
-                                                                    zipCode:
-                                                                        dataIndex
-                                                                            .zipCode!,
-                                                                    company:
-                                                                        dataIndex
-                                                                            .company!,
-                                                                  ),
-                                                                ),
-                                                              )
-                                                                  .then(
-                                                                    (_) => Navigator
-                                                                        .pop(
-                                                                            context),
-                                                                  )
-                                                                  .then(
-                                                                    (_) => data
-                                                                        .getData(),
-                                                                  );
-                                                            },
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Container(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    shape: BoxShape
-                                                                        .circle,
-                                                                    color: Colors
-                                                                        .white,
-                                                                    border:
-                                                                        Border
-                                                                            .all(
-                                                                      color: Colors
-                                                                          .purple,
-                                                                      width: 5,
-                                                                    ),
-                                                                  ),
-                                                                  child:
-                                                                      const Padding(
-                                                                    padding:
-                                                                        EdgeInsets.all(
-                                                                            8.0),
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .edit,
-                                                                      color: Colors
-                                                                          .purple,
-                                                                      size: 50,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Container(
-                                                                  margin:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                    top: 20,
-                                                                  ),
-                                                                  child:
-                                                                      const Text(
-                                                                    'Update Client',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .purple,
-                                                                      fontSize:
-                                                                          18,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              data
-                                                                  .deleteClient(
-                                                                      dataIndex
-                                                                          .id!)
-                                                                  .then(
-                                                                    (_) => value
-                                                                        .getData()
-                                                                        .then((_) =>
-                                                                            listDataClient =
-                                                                                value.listClient)
-                                                                        .then(
-                                                                          (_) =>
-                                                                              Navigator.pop(context),
-                                                                        ),
-                                                                  );
-                                                            },
-                                                            child: Column(
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                Container(
-                                                                  alignment:
-                                                                      Alignment
-                                                                          .center,
-                                                                  decoration:
-                                                                      BoxDecoration(
-                                                                    shape: BoxShape
-                                                                        .circle,
-                                                                    color: Colors
-                                                                        .white,
-                                                                    border:
-                                                                        Border
-                                                                            .all(
-                                                                      color: Colors
-                                                                          .red,
-                                                                      width: 5,
-                                                                    ),
-                                                                  ),
-                                                                  child:
-                                                                      const Padding(
-                                                                    padding:
-                                                                        EdgeInsets.all(
-                                                                            8.0),
-                                                                    child: Icon(
-                                                                      Icons
-                                                                          .delete_sharp,
-                                                                      color: Colors
-                                                                          .red,
-                                                                      size: 50,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Container(
-                                                                  margin:
-                                                                      const EdgeInsets
-                                                                          .only(
-                                                                    top: 20,
-                                                                  ),
-                                                                  child:
-                                                                      const Text(
-                                                                    'Delete Client',
-                                                                    style:
-                                                                        TextStyle(
-                                                                      color: Colors
-                                                                          .red,
-                                                                      fontSize:
-                                                                          18,
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                              child: const Icon(
-                                                Icons.more_horiz,
-                                                color: Colors.black,
-                                                size: 25,
-                                              ),
-                                            ),
-                                            const Text(
-                                              'Client',
-                                              style: TextStyle(
-                                                  color: Color(0xFF9B6DFF)),
-                                            ),
-                                          ],
+                  }
+                  return RefreshIndicator(
+                    onRefresh: () {
+                      setState(() {
+                        isLoading = true;
+                      });
+                      return value
+                          .getData()
+                          .then(
+                              (_) => data.listDataClientModel = data.listClient)
+                          .then((_) => isLoading = false);
+                    },
+                    child: CustomScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(
+                        parent: BouncingScrollPhysics(),
+                      ),
+                      slivers: [
+                        if (listData.isEmpty)
+                          SliverFillRemaining(
+                            hasScrollBody: false,
+                            child: Container(
+                              margin:
+                                  const EdgeInsets.only(top: 10, bottom: 10),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    width: 280,
+                                    height: 280,
+                                    decoration: const BoxDecoration(
+                                      image: DecorationImage(
+                                        fit: BoxFit.contain,
+                                        image: AssetImage(
+                                          'assets/images/empty-clients.png',
                                         ),
                                       ),
                                     ),
                                   ),
-                                );
-                              },
-                              childCount: listData.length,
+                                  Container(
+                                    margin: const EdgeInsets.only(top: 10),
+                                    padding: const EdgeInsets.only(
+                                        left: 20, right: 20),
+                                    child: const Text(
+                                      'Add your Partner to make it easier in making invoices',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    );
-                  }
+                        SliverList(
+                          delegate: SliverChildBuilderDelegate(
+                            (context, index) {
+                              var dataIndex = listData[index];
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 10),
+                                child: Card(
+                                  elevation: 5,
+                                  shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16, horizontal: 4),
+                                    child: ListTile(
+                                      leading: const Icon(Icons.people,
+                                          color: Color(0xFF9B6DFF)),
+                                      title: Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 4),
+                                        child: Text(
+                                          dataIndex.fullname!,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                      ),
+                                      subtitle: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            dataIndex.email!,
+                                            style: const TextStyle(
+                                                color: Color(0xFF9B6DFF)),
+                                          ),
+                                        ],
+                                      ),
+                                      trailing: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              showModalBottomSheet(
+                                                context: context,
+                                                shape:
+                                                    const RoundedRectangleBorder(
+                                                  borderRadius:
+                                                      BorderRadius.only(
+                                                    topLeft:
+                                                        Radius.circular(25),
+                                                    topRight:
+                                                        Radius.circular(25),
+                                                  ),
+                                                ),
+                                                builder: (context) {
+                                                  return Container(
+                                                    margin:
+                                                        const EdgeInsets.all(
+                                                            20),
+                                                    child: Row(
+                                                      mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .spaceAround,
+                                                      children: [
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        UpdateClients(
+                                                                  id: dataIndex
+                                                                      .id!,
+                                                                  clientName:
+                                                                      dataIndex
+                                                                          .fullname!,
+                                                                  address: dataIndex
+                                                                      .address!,
+                                                                  email: dataIndex
+                                                                      .email!,
+                                                                  city: dataIndex
+                                                                      .city!,
+                                                                  zipCode: dataIndex
+                                                                      .zipCode!,
+                                                                  company: dataIndex
+                                                                      .company!,
+                                                                ),
+                                                              ),
+                                                            )
+                                                                .then(
+                                                                  (_) => Navigator
+                                                                      .pop(
+                                                                          context),
+                                                                )
+                                                                .then(
+                                                                  (_) => data
+                                                                      .getData(),
+                                                                );
+                                                          },
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Container(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  border: Border
+                                                                      .all(
+                                                                    color: Colors
+                                                                        .purple,
+                                                                    width: 5,
+                                                                  ),
+                                                                ),
+                                                                child:
+                                                                    const Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              8.0),
+                                                                  child: Icon(
+                                                                    Icons.edit,
+                                                                    color: Colors
+                                                                        .purple,
+                                                                    size: 50,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Container(
+                                                                margin:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                  top: 20,
+                                                                ),
+                                                                child:
+                                                                    const Text(
+                                                                  'Update Client',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .purple,
+                                                                    fontSize:
+                                                                        18,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            data
+                                                                .deleteClient(
+                                                                    dataIndex
+                                                                        .id!)
+                                                                .then(
+                                                                  (_) => value
+                                                                      .getData()
+                                                                      .then((_) =>
+                                                                          value.listDataClientModel =
+                                                                              value.listClient)
+                                                                      .then(
+                                                                        (_) => Navigator.pop(
+                                                                            context),
+                                                                      ),
+                                                                );
+                                                          },
+                                                          child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            children: [
+                                                              Container(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
+                                                                decoration:
+                                                                    BoxDecoration(
+                                                                  shape: BoxShape
+                                                                      .circle,
+                                                                  color: Colors
+                                                                      .white,
+                                                                  border: Border
+                                                                      .all(
+                                                                    color: Colors
+                                                                        .red,
+                                                                    width: 5,
+                                                                  ),
+                                                                ),
+                                                                child:
+                                                                    const Padding(
+                                                                  padding:
+                                                                      EdgeInsets
+                                                                          .all(
+                                                                              8.0),
+                                                                  child: Icon(
+                                                                    Icons
+                                                                        .delete_sharp,
+                                                                    color: Colors
+                                                                        .red,
+                                                                    size: 50,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                              Container(
+                                                                margin:
+                                                                    const EdgeInsets
+                                                                        .only(
+                                                                  top: 20,
+                                                                ),
+                                                                child:
+                                                                    const Text(
+                                                                  'Delete Client',
+                                                                  style:
+                                                                      TextStyle(
+                                                                    color: Colors
+                                                                        .red,
+                                                                    fontSize:
+                                                                        18,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            child: const Icon(
+                                              Icons.more_horiz,
+                                              color: Colors.black,
+                                              size: 25,
+                                            ),
+                                          ),
+                                          const Text(
+                                            'Client',
+                                            style: TextStyle(
+                                                color: Color(0xFF9B6DFF)),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                            childCount: listData.length,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 },
               ),
             ),

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:invoiceinaja/model/Firebase/firestore_client.dart';
 import 'package:invoiceinaja/model/api/api_client.dart';
 import 'package:invoiceinaja/model/client_model.dart';
 import 'package:invoiceinaja/model/post_invoice_model.dart';
+import 'package:invoiceinaja/model/recent_activities_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/invoice_model.dart';
@@ -45,7 +48,16 @@ class InvoicesViewModel with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String? token = prefs.getString('token');
-      await ApiClient().deleteInvoice(index, token!);
+      String? id = prefs.getString('id');
+      await ApiClient().deleteInvoice(index, token!).then((_) {
+        FireStoreService().saveRecent(RecentActivitiesModel(
+          createdAt: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          dateSort: DateTime.now().microsecondsSinceEpoch,
+          idInvoice: index,
+          message: 'Invoice has been deleted',
+          userId: int.parse(id!),
+        ));
+      });
       notifyListeners();
       changeState(InvoiceViewState.none);
     } catch (e) {
@@ -58,7 +70,16 @@ class InvoicesViewModel with ChangeNotifier {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String? token = prefs.getString('token');
-      await ApiClient().addInvoice(invoice, token!);
+      String? id = prefs.getString('id');
+      await ApiClient().addInvoice(invoice, token!).then((value) {
+        FireStoreService().saveRecent(RecentActivitiesModel(
+          createdAt: DateFormat('yyyy-MM-dd').format(DateTime.now()),
+          dateSort: DateTime.now().microsecondsSinceEpoch,
+          idInvoice: value.id,
+          message: 'New invoice created',
+          userId: int.parse(id!),
+        ));
+      });
       await Future.delayed(const Duration(seconds: 1));
       notifyListeners();
       changeState(InvoiceViewState.none);
@@ -68,7 +89,7 @@ class InvoicesViewModel with ChangeNotifier {
   }
 
   Future getData() async {
-    // changeState(InvoiceViewState.loading);
+    changeState(InvoiceViewState.loading);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String? token = prefs.getString('token');

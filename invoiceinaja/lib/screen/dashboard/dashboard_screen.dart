@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -198,7 +196,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 );
               }
               return RefreshIndicator(
-                onRefresh: () => value.getDataGraphic(),
+                onRefresh: () {
+                  return (value.getDataOverall().then(
+                        (_) => value.getDataGraphic().then(
+                              (_) => value.getDataActivities(),
+                            ),
+                      ));
+                },
                 child: ListView(
                   physics: const BouncingScrollPhysics(),
                   children: [

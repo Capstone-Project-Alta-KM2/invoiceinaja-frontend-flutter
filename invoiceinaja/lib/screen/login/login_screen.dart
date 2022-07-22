@@ -16,11 +16,12 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  bool isRemember = false;
   bool isValid = false;
   bool isPasswordError = false;
   bool isError = false;
   bool _obscurepasswordLogin = true;
+  bool isValidateEmail = false;
+  bool isValidatePassword = false;
 
   final _formKey = GlobalKey<FormState>();
 
@@ -36,9 +37,25 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      var viewModel = Provider.of<LoginViewModel>(context, listen: false);
+      await viewModel.getData().then((_) {
+        if (viewModel.isRemember == true) {
+          setState(() {
+            _emailController.text = viewModel.rememberModel.email;
+            _passwordController.text = viewModel.rememberModel.password;
+          });
+        }
+      });
+    });
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    final form = _formKey.currentState;
+    var data = Provider.of<LoginViewModel>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: Consumer<LoginViewModel>(
@@ -112,9 +129,26 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: TextFormField(
                             keyboardType: TextInputType.emailAddress,
                             cursorColor: Colors.black,
-                            controller: _emailController,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
+                            controller: _emailController,
+                            onChanged: (email) {
+                              if (email.isEmpty) {
+                                setState(() {
+                                  isValidateEmail = false;
+                                });
+                              } else if (!RegExp(
+                                      r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$')
+                                  .hasMatch(email)) {
+                                setState(() {
+                                  isValidateEmail = false;
+                                });
+                              } else {
+                                setState(() {
+                                  isValidateEmail = true;
+                                });
+                              }
+                            },
                             validator: (email) {
                               if (email == null || email.isEmpty) {
                                 return 'Email cannot be empty';
@@ -167,18 +201,20 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: TextFormField(
                             obscureText: _obscurepasswordLogin,
                             cursorColor: Colors.black,
-                            controller: _passwordController,
                             autovalidateMode:
                                 AutovalidateMode.onUserInteraction,
+                            controller: _passwordController,
                             onChanged: (password) {
                               if (password.isEmpty) {
                                 setState(() {
                                   isPasswordError = true;
+                                  isValidatePassword = false;
                                 });
                               } else {
                                 setState(() {
                                   isError = false;
                                   isPasswordError = false;
+                                  isValidatePassword = true;
                                 });
                               }
                             },
@@ -239,10 +275,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Checkbox(
-                                value: isRemember,
-                                onChanged: (bool? value) {
+                                value: value.isRemember,
+                                onChanged: (bool? data) {
                                   setState(() {
-                                    isRemember = value!;
+                                    value.isRememberModel = data!;
                                   });
                                 },
                               ),
@@ -301,79 +337,74 @@ class _LoginScreenState extends State<LoginScreen> {
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
-                              onPressed: form == null
-                                  ? null
-                                  : form.validate()
-                                      ? () {
-                                          final form = _formKey.currentState!;
-                                          if (form.validate()) {
-                                            value
-                                                .login(_emailController.text,
-                                                    _passwordController.text)
-                                                .then(
-                                              (data) {
-                                                if (value.state ==
-                                                    LoginViewState.none) {
-                                                  Navigator.pushAndRemoveUntil(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const HomepageScreen(),
-                                                    ),
-                                                    (Route<dynamic> route) =>
-                                                        false,
-                                                  );
-                                                }
-                                                if (value.state ==
-                                                    LoginViewState
-                                                        .serverTimeout) {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content: Container(
-                                                        width: double.infinity,
-                                                        height: 30,
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: const Text(
-                                                            "We couldn't connect to server, please try again later"),
-                                                      ),
-                                                      backgroundColor:
-                                                          Theme.of(context)
-                                                              .errorColor,
-                                                    ),
-                                                  );
-                                                }
-                                                if (value.state ==
-                                                    LoginViewState.error) {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      content: Container(
-                                                        width: double.infinity,
-                                                        height: 50,
-                                                        alignment:
-                                                            Alignment.center,
-                                                        child: const Text(
-                                                            "Something went wrong, please check your connection or try again later"),
-                                                      ),
-                                                      backgroundColor:
-                                                          Theme.of(context)
-                                                              .errorColor,
-                                                    ),
-                                                  );
-                                                }
-                                                if (value.state ==
-                                                    LoginViewState.failed) {
-                                                  setState(() {
-                                                    isError = true;
-                                                  });
-                                                }
-                                              },
-                                            );
-                                          }
-                                        }
-                                      : null,
+                              onPressed: isValidateEmail && isValidatePassword
+                                  ? () {
+                                      final form = _formKey.currentState!;
+
+                                      if (form.validate()) {
+                                        value
+                                            .login(_emailController.text,
+                                                _passwordController.text)
+                                            .then(
+                                          (_) {
+                                            if (value.state ==
+                                                LoginViewState.none) {
+                                              Navigator.pushAndRemoveUntil(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const HomepageScreen(),
+                                                ),
+                                                (Route<dynamic> route) => false,
+                                              );
+                                            }
+                                            if (value.state ==
+                                                LoginViewState.serverTimeout) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Container(
+                                                    width: double.infinity,
+                                                    height: 30,
+                                                    alignment: Alignment.center,
+                                                    child: const Text(
+                                                        "We couldn't connect to server, please try again later"),
+                                                  ),
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .errorColor,
+                                                ),
+                                              );
+                                            }
+                                            if (value.state ==
+                                                LoginViewState.error) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(
+                                                SnackBar(
+                                                  content: Container(
+                                                    width: double.infinity,
+                                                    height: 50,
+                                                    alignment: Alignment.center,
+                                                    child: const Text(
+                                                        "Something went wrong, please check your connection or try again later"),
+                                                  ),
+                                                  backgroundColor:
+                                                      Theme.of(context)
+                                                          .errorColor,
+                                                ),
+                                              );
+                                            }
+                                            if (value.state ==
+                                                LoginViewState.failed) {
+                                              setState(() {
+                                                isError = true;
+                                              });
+                                            }
+                                          },
+                                        );
+                                      }
+                                    }
+                                  : null,
                               child: const Text(
                                 'Login',
                               ),

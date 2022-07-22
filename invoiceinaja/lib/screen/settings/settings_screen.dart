@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:invoiceinaja/screen/settings/edit_profile_screen.dart';
+
 import 'package:invoiceinaja/screen/login/login_screen.dart';
 import 'package:invoiceinaja/screen/settings/reset_password_screen.dart';
 import 'package:invoiceinaja/screen/settings/settings_view_model.dart';
 import 'package:provider/provider.dart';
+
+import 'edit_profile_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({Key? key}) : super(key: key);
@@ -14,12 +15,14 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
       var viewModel = Provider.of<SettingViewModel>(context, listen: false);
-      await viewModel.getDataUser();
+      await viewModel.getDataUser().then((_) => isLoading = false);
     });
   }
 
@@ -37,7 +40,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       backgroundColor: Colors.white,
       body: Consumer<SettingViewModel>(
         builder: (context, value, child) {
-          if (value.state == SettingViewState.loading) {
+          if (isLoading) {
             return Container(
               alignment: Alignment.center,
               child: const CircularProgressIndicator(
@@ -153,12 +156,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 10, vertical: 24),
                   child: ListTile(
-                    leading: const CircleAvatar(
-                      backgroundColor: Color(0xFF9B6DFF),
+                    leading: CircleAvatar(
+                      backgroundColor: const Color(0xFF9B6DFF),
                       foregroundColor: Colors.white,
                       maxRadius: 30,
-                      backgroundImage: NetworkImage(
-                          'https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=871&q=80'),
+                      backgroundImage:
+                          NetworkImage(value.userData.avatar ?? ''),
                     ),
                     title: Text(
                       value.userData.fullname ?? '',
@@ -171,6 +174,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => EditProfile(
+                              avatar: value.userData.avatar ?? '',
                               nama: value.userData.fullname ?? '',
                               email: value.userData.email ?? '',
                               phone: value.userData.phoneNumber ?? '',

@@ -63,6 +63,23 @@ class ApiClient {
     }
   }
 
+  Future<Response> resetPassword(String email) async {
+    try {
+      final response = await dio.post(
+        '/reset_passwords',
+        data: {
+          'email': email,
+        },
+      );
+      return response;
+    } on DioError catch (e) {
+      if (e.type == DioErrorType.connectTimeout) {
+        throw Exception('Connection Timeout to Server');
+      }
+      throw Exception(e.message);
+    }
+  }
+
   Future<Response> updateUser(UserModel user, String token) async {
     try {
       dio.options.headers["Authorization"] = 'Bearer $token';
@@ -127,14 +144,14 @@ class ApiClient {
     }
   }
 
-  Future<Response> addInvoice(PostInvoice invoice, String token) async {
+  Future<InvoiceModel> addInvoice(PostInvoice invoice, String token) async {
     try {
       dio.options.headers["Authorization"] = 'Bearer $token';
       final response = await dio.post(
         '/invoices',
         data: jsonEncode(invoice.toJson()),
       );
-      return response;
+      return InvoiceModel.fromJson(response.data['data']);
     } on DioError catch (e) {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');
@@ -148,29 +165,6 @@ class ApiClient {
       throw Exception(e.message);
     }
   }
-
-  // Future<Response> updateInvoice(
-  //     InvoiceModel invoice, String id, String token) async {
-  //   try {
-  //     dio.options.headers["Authorization"] = 'Bearer $token';
-  //     final response = await dio.put(
-  //       '/invoices/$id',
-  //       data: jsonEncode(invoice.toJson()),
-  //     );
-  //     return response;
-  //   } on DioError catch (e) {
-  //     if (e.type == DioErrorType.connectTimeout) {
-  //       throw Exception('Connection Timeout to Server');
-  //     }
-  //     if (e.response?.statusCode == 422) {
-  //       throw Exception('Update data invoice failed');
-  //     }
-  //     if (e.response?.statusCode == 401) {
-  //       throw Exception('Token Expired');
-  //     }
-  //     throw Exception(e.message);
-  //   }
-  // }
 
   Future<Response> deleteInvoice(int id, String token) async {
     try {
@@ -215,14 +209,14 @@ class ApiClient {
     }
   }
 
-  Future<Response> addClient(ClientModel client, String token) async {
+  Future<ClientModel> addClient(ClientModel client, String token) async {
     try {
       dio.options.headers["Authorization"] = 'Bearer $token';
       final response = await dio.post(
         '/clients',
         data: jsonEncode(client.toJson()),
       );
-      return response;
+      return ClientModel.fromJson(response.data['data']);
     } on DioError catch (e) {
       if (e.type == DioErrorType.connectTimeout) {
         throw Exception('Connection Timeout to Server');

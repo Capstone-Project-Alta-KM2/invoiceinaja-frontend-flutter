@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:invoiceinaja/model/Firebase/firestore_client.dart';
 import 'package:invoiceinaja/model/api/api_client.dart';
 import 'package:invoiceinaja/model/overall_model.dart';
+import 'package:invoiceinaja/model/recent_activities_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../model/chart_model.dart';
@@ -30,6 +32,15 @@ class DashBoardsViewModel with ChangeNotifier {
   var _listInvoiceActivities = <InvoiceModel>[];
   List<InvoiceModel> get listInvoiceActivities =>
       List.unmodifiable(_listInvoiceActivities);
+  var _listRecent = <RecentActivitiesModel>[];
+  List<RecentActivitiesModel> get listRecent => List.unmodifiable(_listRecent);
+  var _listToday = <RecentActivitiesModel>[];
+  List<RecentActivitiesModel> get listToday => List.unmodifiable(_listToday);
+  var _listYesterday = <RecentActivitiesModel>[];
+  List<RecentActivitiesModel> get listYesterday =>
+      List.unmodifiable(_listYesterday);
+  var _listLater = <RecentActivitiesModel>[];
+  List<RecentActivitiesModel> get listLater => List.unmodifiable(_listLater);
 
   changeState(DashBoardViewState s) {
     _state = s;
@@ -87,6 +98,46 @@ class DashBoardsViewModel with ChangeNotifier {
       String? token = prefs.getString('token');
       final dataApi = await ApiClient().getDataInvoice(token!);
       _listInvoiceActivities = dataApi;
+      notifyListeners();
+      changeState(DashBoardViewState.none);
+    } catch (e) {
+      if (e.toString().contains('Token Expired')) {
+        changeState(DashBoardViewState.tokenExpired);
+      } else {
+        changeState(DashBoardViewState.error);
+      }
+    }
+  }
+
+  Future getDataNotifications() async {
+    changeState(DashBoardViewState.loading);
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      String? id = prefs.getString('id');
+      final dataFirestore =
+          await FireStoreService().getRecentActivities(int.parse(id!));
+      _listRecent = dataFirestore;
+      _listToday = _listRecent
+          .where((element) =>
+              DateTime.now()
+                  .difference(DateTime.parse(element.createdAt!))
+                  .inDays ==
+              0)
+          .toList();
+      _listYesterday = _listRecent
+          .where((element) =>
+              DateTime.now()
+                  .difference(DateTime.parse(element.createdAt!))
+                  .inDays ==
+              1)
+          .toList();
+      _listLater = _listRecent
+          .where((element) =>
+              DateTime.now()
+                  .difference(DateTime.parse(element.createdAt!))
+                  .inDays >
+              1)
+          .toList();
       notifyListeners();
       changeState(DashBoardViewState.none);
     } catch (e) {

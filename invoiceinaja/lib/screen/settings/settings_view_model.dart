@@ -27,7 +27,7 @@ class SettingViewModel with ChangeNotifier {
   }
 
   Future getDataUser() async {
-    changeState(SettingViewState.loading);
+    // changeState(SettingViewState.loading);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     try {
       String? id = prefs.getString('id');

@@ -107,24 +107,6 @@ class _AddClientsState extends State<AddClients> {
                     Container(
                       margin: const EdgeInsets.only(top: 20),
                       child: const Text(
-                        'Phone Number',
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 12),
-                      child: TextFormField(
-                        controller: _phoneNumberController,
-                        decoration: InputDecoration(
-                          hintText: 'Phone Number',
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                        ),
-                      ),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      child: const Text(
                         'Street',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
